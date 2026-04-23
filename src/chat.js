@@ -131,7 +131,7 @@ export function initChat() {
     log.appendChild(div);
     scrollToBottom();
 
-    const DELAY = 22; // ms per atom
+    const DELAY = 17; // ms per atom
     const CURSOR = '<span class="inline-block w-0.5 h-3.5 bg-accent-glow align-middle ml-px animate-blink"></span>';
 
     const atoms = tokenize(rawText);

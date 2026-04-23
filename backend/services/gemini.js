@@ -27,7 +27,7 @@ export async function chat(message, repoSummary = '') {
   const systemPrompt = [knowledgeText, repoSummary].filter(Boolean).join('\n\n');
 
   const model = getClient().getGenerativeModel({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-2.5-flash-lite',
     systemInstruction: systemPrompt,
   });
 
