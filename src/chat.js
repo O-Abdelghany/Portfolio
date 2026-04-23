@@ -1,19 +1,17 @@
 /**
- * chat.js — AI Sandbox terminal chat logic.
+ * chat.js — AI Sandbox terminal chat logic with smooth real-time markdown typewriter.
  */
 
-// Point this at your backend. Change to your deployed URL in production.
 const API_URL = window.ENV?.API_URL || 'http://localhost:3000/api/chat';
 
 export function initChat() {
-  const log      = document.getElementById('chat-log');
-  const input    = document.getElementById('chat-input');
-  const sendBtn  = document.getElementById('chat-send');
-  const prompts  = document.querySelectorAll('.suggested-prompt');
+  const log     = document.getElementById('chat-log');
+  const input   = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send');
+  const prompts = document.querySelectorAll('.suggested-prompt');
 
   if (!log || !input || !sendBtn) return;
 
-  // Suggested prompt chips
   prompts.forEach(btn => {
     btn.addEventListener('click', () => {
       input.value = btn.textContent.trim();
@@ -22,10 +20,8 @@ export function initChat() {
     });
   });
 
-  // Send on button click
   sendBtn.addEventListener('click', submit);
 
-  // Send on Enter, newline on Shift+Enter
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -36,35 +32,27 @@ export function initChat() {
   async function submit() {
     const message = input.value.trim();
     if (!message) return;
-
     input.value = '';
     sendBtn.disabled = true;
-
     appendUserBubble(message);
     const indicator = appendTypingIndicator();
-
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
       });
-
       removeElement(indicator);
-
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         appendAgentBubble(err.error || 'Something went wrong. Please try again.', true);
       } else {
         const data = await res.json();
-        appendAgentBubble(data.reply || 'No response received.');
+        await typewriterBubble(data.reply || 'No response received.');
       }
     } catch {
       removeElement(indicator);
-      appendAgentBubble(
-        'Connection error. Please check that the backend is running, or <a href="#contact" class="text-accent-glow underline">contact Omar directly</a>.',
-        true
-      );
+      appendAgentBubble('Connection error — backend may not be running. [Contact Omar directly](#contact)', true);
     } finally {
       sendBtn.disabled = false;
       input.focus();
@@ -74,22 +62,110 @@ export function initChat() {
   function appendUserBubble(text) {
     const div = document.createElement('div');
     div.className = 'flex gap-3 justify-end';
-    div.innerHTML = `
-      <p class="bg-accent/20 border border-accent/30 text-text-primary text-sm px-4 py-2 rounded-lg rounded-tr-sm max-w-xs sm:max-w-md leading-relaxed">${escapeHtml(text)}</p>
-      <span class="text-text-muted shrink-0 select-none text-sm">you$</span>
-    `;
+    const p = document.createElement('p');
+    p.className = 'bg-accent/20 border border-accent/30 text-text-primary text-sm px-4 py-2 rounded-lg rounded-tr-sm max-w-xs sm:max-w-md leading-relaxed';
+    p.textContent = text;
+    const label = document.createElement('span');
+    label.className = 'text-text-muted shrink-0 select-none text-sm';
+    label.textContent = 'you$';
+    div.appendChild(p);
+    div.appendChild(label);
     log.appendChild(div);
     scrollToBottom();
   }
 
-  function appendAgentBubble(text, isError = false) {
+  // Tokenize raw markdown into atoms:
+  // - markdown tokens (bold, links, bullets, URLs) = one atom each
+  // - everything else = one character per atom
+  function tokenize(text) {
+    const atoms = [];
+    let i = 0;
+    while (i < text.length) {
+      // Bold **...**
+      if (text.startsWith('**', i)) {
+        const end = text.indexOf('**', i + 2);
+        if (end !== -1) {
+          atoms.push(text.slice(i, end + 2));
+          i = end + 2;
+          continue;
+        }
+      }
+      // Markdown link [...](...)
+      if (text[i] === '[') {
+        const closeBracket = text.indexOf(']', i);
+        if (closeBracket !== -1 && text[closeBracket + 1] === '(') {
+          const closeParen = text.indexOf(')', closeBracket + 2);
+          if (closeParen !== -1) {
+            atoms.push(text.slice(i, closeParen + 1));
+            i = closeParen + 1;
+            continue;
+          }
+        }
+      }
+      // Raw URL https://...
+      if (text.startsWith('https://', i) || text.startsWith('http://', i)) {
+        const end = text.slice(i).search(/[\s,\)>]/);
+        const urlEnd = end === -1 ? text.length : i + end;
+        atoms.push(text.slice(i, urlEnd));
+        i = urlEnd;
+        continue;
+      }
+      // Plain character
+      atoms.push(text[i]);
+      i++;
+    }
+    return atoms;
+  }
+
+  // Smooth typewriter: one atom at a time, consistent speed
+  async function typewriterBubble(rawText) {
     const div = document.createElement('div');
     div.className = 'flex gap-3';
-    const colorClass = isError ? 'text-red-400' : 'text-text-muted';
-    div.innerHTML = `
-      <span class="text-accent-glow shrink-0 select-none text-sm">agent$</span>
-      <p class="${colorClass} text-sm leading-relaxed max-w-xs sm:max-w-lg">${parseMarkdown(text)}</p>
-    `;
+    const prefix = document.createElement('span');
+    prefix.className = 'text-accent-glow shrink-0 select-none text-sm';
+    prefix.textContent = 'agent$';
+    const p = document.createElement('p');
+    p.className = 'text-text-muted text-sm leading-relaxed max-w-xs sm:max-w-lg';
+    div.appendChild(prefix);
+    div.appendChild(p);
+    log.appendChild(div);
+    scrollToBottom();
+
+    const DELAY = 22; // ms per atom
+    const CURSOR = '<span class="inline-block w-0.5 h-3.5 bg-accent-glow align-middle ml-px animate-blink"></span>';
+
+    const atoms = tokenize(rawText);
+    let built = '';
+
+    await new Promise(resolve => {
+      let idx = 0;
+      function tick() {
+        if (idx >= atoms.length) {
+          p.innerHTML = parseMarkdown(rawText);
+          scrollToBottom();
+          return resolve();
+        }
+        built += atoms[idx];
+        idx++;
+        p.innerHTML = parseMarkdown(built) + CURSOR;
+        scrollToBottom();
+        setTimeout(tick, DELAY);
+      }
+      tick();
+    });
+  }
+
+  function appendAgentBubble(text, isError) {
+    const div = document.createElement('div');
+    div.className = 'flex gap-3';
+    const prefix = document.createElement('span');
+    prefix.className = 'text-accent-glow shrink-0 select-none text-sm';
+    prefix.textContent = 'agent$';
+    const p = document.createElement('p');
+    p.className = (isError ? 'text-red-400' : 'text-text-muted') + ' text-sm leading-relaxed max-w-xs sm:max-w-lg';
+    p.innerHTML = parseMarkdown(text);
+    div.appendChild(prefix);
+    div.appendChild(p);
     log.appendChild(div);
     scrollToBottom();
   }
@@ -97,41 +173,70 @@ export function initChat() {
   function appendTypingIndicator() {
     const div = document.createElement('div');
     div.className = 'flex gap-3 typing-indicator';
-    div.innerHTML = `
-      <span class="text-accent-glow shrink-0 select-none text-sm">agent$</span>
-      <p class="text-text-muted text-sm">
-        <span class="inline-block w-1.5 h-4 bg-accent-glow animate-blink align-middle"></span>
-      </p>
-    `;
+    const prefix = document.createElement('span');
+    prefix.className = 'text-accent-glow shrink-0 select-none text-sm';
+    prefix.textContent = 'agent$';
+    const p = document.createElement('p');
+    p.className = 'text-text-muted text-sm';
+    p.innerHTML = '<span class="inline-block w-1.5 h-4 bg-accent-glow animate-blink align-middle"></span>';
+    div.appendChild(prefix);
+    div.appendChild(p);
     log.appendChild(div);
     scrollToBottom();
     return div;
   }
 
-  function removeElement(el) {
-    el?.parentNode?.removeChild(el);
-  }
+  function removeElement(el) { el?.parentNode?.removeChild(el); }
+  function scrollToBottom() { log.scrollTop = log.scrollHeight; }
 
-  function scrollToBottom() {
-    log.scrollTop = log.scrollHeight;
-  }
-
-  // Convert markdown links [label](url) to <a> tags, and escape everything else
   function parseMarkdown(text) {
-    const escaped = escapeHtml(text);
-    // Restore links after escaping (we need to handle the URL carefully)
-    return escaped.replace(
-      /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,
-      '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-accent-glow underline hover:text-white transition-colors duration-150">$1</a>'
-    );
-  }
+    let html = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+    // External markdown links [label](url)
+    html = html.replace(
+      /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g,
+      '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-accent-glow underline hover:text-white transition-colors duration-150 font-medium">$1 &#8599;</a>'
+    );
+
+    // Internal section links [label](#section)
+    html = html.replace(
+      /\[([^\]]+)\]\(#([^\s)]+)\)/g,
+      '<a href="#$2" onclick="event.preventDefault();document.getElementById(\'$2\')?.scrollIntoView({behavior:\'smooth\'});" class="text-accent underline hover:text-accent-glow transition-colors duration-150 font-medium cursor-pointer">$1 &#8595;</a>'
+    );
+
+    // Raw URLs not already in an anchor
+    html = html.replace(
+      /(?<![="'>])(https?:\/\/[^\s<,\)&"]+)/g,
+      '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-accent-glow underline hover:text-white transition-colors duration-150 break-all">$1 &#8599;</a>'
+    );
+
+    // Bold **text**
+    html = html.replace(/\*\*([^*\n]+)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
+
+    // Italic *text*
+    html = html.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em class="italic opacity-80">$1</em>');
+
+    // Bullet lines
+    html = html.replace(
+      /^[\*\-•]\s+(.+)$/gm,
+      '<li class="flex gap-2 items-start my-0.5"><span class="text-accent shrink-0 mt-0.5">&#8250;</span><span>$1</span></li>'
+    );
+
+    // Wrap bullet lists
+    const lines = html.split('\n');
+    const out = [];
+    let inList = false;
+    for (const line of lines) {
+      if (line.trimStart().startsWith('<li')) {
+        if (!inList) { out.push('<ul class="space-y-1 my-2 ml-1">'); inList = true; }
+        out.push(line);
+      } else {
+        if (inList) { out.push('</ul>'); inList = false; }
+        out.push(line);
+      }
+    }
+    if (inList) out.push('</ul>');
+
+    return out.join('<br/>').replace(/<br\/>\s*<ul/g, '<ul').replace(/<\/ul>\s*<br\/>/g, '</ul>');
   }
 }

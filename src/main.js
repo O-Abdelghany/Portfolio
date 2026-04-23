@@ -82,7 +82,7 @@ function initContactForm() {
 
     try {
       // Replace with your Formspree endpoint: https://formspree.io/f/YOUR_ID
-      const FORMSPREE_URL = 'https://formspree.io/f/YOUR_FORMSPREE_ID';
+      const FORMSPREE_URL = "https://formspree.io/f/mdayylzr";
       const res = await fetch(FORMSPREE_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },

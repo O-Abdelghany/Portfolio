@@ -6,7 +6,16 @@ import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const knowledgeText = readFileSync(join(__dirname, '../context/knowledge.txt'), 'utf-8');
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+// Lazy-init so dotenv has time to load before we read the API key
+let genAI = null;
+function getClient() {
+  if (!genAI) {
+    const key = process.env.GEMINI_API_KEY;
+    if (!key) throw new Error('GEMINI_API_KEY is not set in environment variables.');
+    genAI = new GoogleGenerativeAI(key);
+  }
+  return genAI;
+}
 
 /**
  * Send a message to Gemini 1.5 Flash with Omar's knowledge context as system prompt.
@@ -17,8 +26,8 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 export async function chat(message, repoSummary = '') {
   const systemPrompt = [knowledgeText, repoSummary].filter(Boolean).join('\n\n');
 
-  const model = genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
+  const model = getClient().getGenerativeModel({
+    model: 'gemini-2.5-flash',
     systemInstruction: systemPrompt,
   });
 
