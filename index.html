@@ -44,6 +44,7 @@
     body { background-color: #080810; color: #ffffff; font-family: 'Inter', system-ui, sans-serif; }
     /* All sections transparent so Vanta background shows through */
     section, footer, nav { position: relative; z-index: 1; }
+    section[id="home"] { z-index: 2; }
     section[id] {
       background-color: rgba(8,8,16,0.88) !important;
       border-top: 1px solid rgba(30,30,58,0.8);
@@ -115,17 +116,32 @@
       font-weight: 500;
     }
 
-    /* ── Primary button shimmer ─────────────────────────────── */
-    .btn-primary {
+    /* ── Hero buttons base ──────────────────────────────────── */
+    .btn-primary,
+    .btn-ghost,
+    .btn-cv {
       position: relative;
       overflow: hidden;
+      transition: transform 250ms cubic-bezier(0.34,1.56,0.64,1),
+                  box-shadow 250ms ease,
+                  background-color 250ms ease,
+                  border-color 250ms ease,
+                  color 250ms ease;
     }
+    .btn-primary:hover  { transform: translateY(-3px) scale(1.03); }
+    .btn-ghost:hover    { transform: translateY(-3px) scale(1.03); }
+    .btn-cv:hover       { transform: translateY(-3px) scale(1.03); }
+    .btn-primary:active,
+    .btn-ghost:active,
+    .btn-cv:active      { transform: translateY(0) scale(0.98); }
+
+    /* Shimmer sweep on primary */
     @media (prefers-reduced-motion: no-preference) {
       .btn-primary::after {
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
+        background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.18) 50%, transparent 65%);
         background-size: 200% 100%;
         opacity: 0;
         transition: opacity 200ms ease;
@@ -133,6 +149,23 @@
       .btn-primary:hover::after {
         opacity: 1;
         animation: shimmer 600ms ease forwards;
+      }
+      /* Glow pulse on primary hover */
+      .btn-primary:hover {
+        box-shadow: 0 0 18px rgba(168,85,247,0.55), 0 6px 20px rgba(124,58,237,0.4);
+      }
+      /* Ghost "Ask My AI Agent" — border glow + inner tint */
+      .btn-ghost:hover {
+        background-color: rgba(124,58,237,0.18) !important;
+        border-color: #a855f7 !important;
+        box-shadow: 0 0 14px rgba(168,85,247,0.4), 0 4px 16px rgba(124,58,237,0.25);
+        color: #c084fc !important;
+      }
+      /* CV button — subtle glow */
+      .btn-cv:hover {
+        border-color: #a855f7 !important;
+        box-shadow: 0 0 12px rgba(168,85,247,0.35), 0 4px 14px rgba(124,58,237,0.2);
+        color: #a855f7 !important;
       }
     }
 
@@ -337,6 +370,26 @@
     .nav-link:hover::after { transform: scaleX(1); }
     .nav-link.active { color: #a855f7; }
 
+    /* ── Footer link (same underline as nav) ────────────────── */
+    .footer-link {
+      position: relative;
+      transition: color 200ms ease;
+    }
+    .footer-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1.5px;
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 250ms ease;
+      border-radius: 1px;
+    }
+    .footer-link:hover::after { transform: scaleX(1); }
+    /* when footer-link is a span inside an <a>, trigger on parent hover */
+    a:hover > .footer-link::after { transform: scaleX(1); }
+
     /* ── Scroll progress bar ────────────────────────────────── */
     #scroll-progress {
       position: fixed;
@@ -412,12 +465,33 @@
     body.light-mode h1, body.light-mode h2, body.light-mode h3 { color: #1a1a2e !important; }
     body.light-mode p  { color: #5a5a7a; }
 
-    /* Nav logo + links */
+    /* Nav */
     body.light-mode .nav-link { color: #5a5a7a !important; }
     body.light-mode .nav-link.active { color: #7c3aed !important; }
     body.light-mode .nav-link:hover  { color: #1a1a2e !important; }
 
-    /* Cards */
+    /* Hero buttons */
+    body.light-mode .btn-primary { color: #ffffff !important; }
+    body.light-mode .btn-ghost {
+      border-color: #7c3aed !important;
+      color: #7c3aed !important;
+    }
+    body.light-mode .btn-ghost:hover {
+      background-color: rgba(124,58,237,0.1) !important;
+      color: #5b21b6 !important;
+      border-color: #a855f7 !important;
+    }
+    body.light-mode .btn-cv {
+      border-color: #7c3aed !important;
+      color: #7c3aed !important;
+    }
+    body.light-mode .btn-cv:hover {
+      border-color: #a855f7 !important;
+      color: #a855f7 !important;
+      box-shadow: 0 0 12px rgba(168,85,247,0.35), 0 4px 14px rgba(124,58,237,0.2) !important;
+    }
+
+    /* Cards (skill cards, timeline, project) */
     body.light-mode .bg-noir-surface,
     body.light-mode .project-card,
     body.light-mode .timeline-card {
@@ -428,8 +502,49 @@
     body.light-mode .project-card:hover {
       box-shadow: 0 0 0 1px rgba(124,58,237,0.4), 0 8px 32px rgba(124,58,237,0.15) !important;
     }
+    /* Skill card container hover border */
+    body.light-mode .bg-noir-surface:hover {
+      border-color: rgba(124,58,237,0.4) !important;
+    }
 
-    /* Terminal in light mode — dark gradient with purple glow */
+    /* Project card tech tags */
+    body.light-mode .project-card span.font-mono {
+      border-color: #d4d0f0 !important;
+      color: #5a5a7a !important;
+    }
+    /* Project card "View Code" button */
+    body.light-mode .project-card a {
+      border-color: #7c3aed !important;
+      color: #7c3aed !important;
+    }
+    body.light-mode .project-card a:hover {
+      background-color: #7c3aed !important;
+      color: #ffffff !important;
+    }
+
+    /* Skill badges */
+    body.light-mode .skill-badge {
+      background: rgba(124,58,237,0.06) !important;
+      border-color: #d4d0f0 !important;
+      color: #5a5a7a !important;
+    }
+    body.light-mode .skill-badge:hover {
+      background: rgba(124,58,237,0.12) !important;
+      border-color: #a855f7 !important;
+      color: #1a1a2e !important;
+    }
+    body.light-mode .skill-badge-glow {
+      background: rgba(124,58,237,0.1) !important;
+      border-color: #b8b0e8 !important;
+      color: #7c3aed !important;
+    }
+    body.light-mode .skill-badge-glow:hover {
+      background: rgba(124,58,237,0.18) !important;
+      border-color: #7c3aed !important;
+      color: #5b21b6 !important;
+    }
+
+    /* Terminal — stays dark */
     body.light-mode .terminal-scanlines {
       background: linear-gradient(135deg, #0d0d1a 0%, #1a0a2e 50%, #0a1628 100%) !important;
       border: 1px solid rgba(124,58,237,0.5) !important;
@@ -438,8 +553,8 @@
     body.light-mode #chat-log {
       background: linear-gradient(180deg, #0d0d1a 0%, #0a0a18 100%) !important;
     }
-    body.light-mode .border-noir-border { border-color: #e2e0f0 !important; }
-    /* Suggested prompt chips in light mode */
+
+    /* Suggested prompts */
     body.light-mode .suggested-prompt {
       background: rgba(124,58,237,0.08) !important;
       border-color: rgba(124,58,237,0.3) !important;
@@ -451,62 +566,65 @@
       color: #7c3aed !important;
     }
 
-    /* Skill badges */
-    body.light-mode .skill-badge {
-      background: rgba(124,58,237,0.06) !important;
-      border-color: #d4d0f0 !important;
-      color: #5a5a7a !important;
+    /* Contact cards */
+    body.light-mode a.flex.items-center.gap-3.bg-noir-surface {
+      background-color: #ffffff !important;
+      border-color: #e2e0f0 !important;
     }
-    body.light-mode .skill-badge:hover {
-      background: rgba(124,58,237,0.12) !important;
+    body.light-mode a.flex.items-center.gap-3.bg-noir-surface:hover {
+      background-color: #f5f3ff !important;
+    }
+
+    /* Contact form */
+    body.light-mode #contact-form input,
+    body.light-mode #contact-form textarea {
+      background-color: #f8f7ff !important;
+      border-color: #e2e0f0 !important;
       color: #1a1a2e !important;
     }
-    body.light-mode .skill-badge-glow {
-      background: rgba(124,58,237,0.1) !important;
-      border-color: #b8b0e8 !important;
+    body.light-mode #contact-form input:focus,
+    body.light-mode #contact-form textarea:focus {
+      border-color: #7c3aed !important;
+      box-shadow: 0 0 0 2px rgba(124,58,237,0.15) !important;
+    }
+    body.light-mode #contact-form input::placeholder,
+    body.light-mode #contact-form textarea::placeholder { color: #a0a0b8 !important; }
+    body.light-mode #contact-form label { color: #5a5a7a !important; }
+
+    /* Contact section CV row view button */
+    body.light-mode a.border.border-noir-border.hover\:border-accent {
+      border-color: #e2e0f0 !important;
+      color: #5a5a7a !important;
+    }
+    body.light-mode a.border.border-noir-border.hover\:border-accent:hover {
+      border-color: #7c3aed !important;
       color: #7c3aed !important;
     }
 
     /* Section divider */
-    body.light-mode .section-divider {
-      background: transparent !important;
-    }
-    body.light-mode .section-divider::after {
-      background: linear-gradient(90deg, transparent, #7c3aed, #a855f7, #7c3aed, transparent) !important;
-    }
+    body.light-mode .section-divider { background: transparent !important; }
     body.light-mode .section-divider .line-left,
-    body.light-mode .section-divider .line-right {
-      background: rgba(124,58,237,0.3) !important;
-    }
-    body.light-mode .section-divider .node {
-      background: #7c3aed !important;
-    }
+    body.light-mode .section-divider .line-right { background: rgba(124,58,237,0.3) !important; }
+    body.light-mode .section-divider .node { background: #7c3aed !important; }
 
-    /* Timeline line */
+    /* Timeline */
     body.light-mode .timeline-line {
-      background: linear-gradient(to bottom, #7c3aed, #5346a1) !important;
+      background: linear-gradient(to bottom, #7c3aed, #e2e0f0) !important;
     }
 
     /* Availability badge */
     body.light-mode .bg-green-500\/10 { background-color: rgba(34,197,94,0.1) !important; }
 
-    /* Light mode section overlays */
-    body.light-mode section[id] {
-      background-color: rgba(240,238,255,0.88) !important;
-    }
-    body.light-mode section[id="home"] {
-      background-color: rgba(240,238,255,0.55) !important;
-    }
-    body.light-mode footer {
-      background-color: rgba(235,232,255,0.95) !important;
-    }
-    body.light-mode nav#navbar {
-      background-color: rgba(248,247,255,0.96) !important;
-    }
-
     /* Footer */
     body.light-mode footer { background-color: #f0eeff !important; border-top-color: #e2e0f0 !important; }
     body.light-mode footer p, body.light-mode footer a { color: #5a5a7a !important; }
+    body.light-mode footer a:hover { color: #7c3aed !important; }
+
+    /* Section overlays */
+    body.light-mode section[id] { background-color: rgba(240,238,255,0.88) !important; }
+    body.light-mode section[id="home"] { background-color: rgba(240,238,255,0.55) !important; }
+    body.light-mode footer { background-color: rgba(235,232,255,0.95) !important; }
+    body.light-mode nav#navbar { background-color: rgba(248,247,255,0.96) !important; }
 
     /* ── Light mode toggle button ────────────────────────────── */
     #dim-toggle {
@@ -525,7 +643,7 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
       <!-- Logo -->
       <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow rounded">
-        omar@agent:~$
+        Omar Abdelghany
       </a>
       <!-- Desktop links -->
       <ul class="hidden md:flex items-center gap-8" role="list">
@@ -566,7 +684,7 @@
   </nav>
 
   <!-- ===== HERO / HOME ===== -->
-  <section id="home" class="min-h-screen relative flex items-center justify-center bg-transparent overflow-hidden pt-16">
+  <section id="home" class="min-h-screen relative flex items-center justify-center bg-transparent pt-16">
     <div class="hero-glow"></div>
     <div class="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6">
       <!-- Badge -->
@@ -591,30 +709,17 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
         <a href="#ai-sandbox"
-           class="inline-flex items-center justify-center gap-2 bg-transparent border border-accent text-accent hover:bg-accent/10 font-semibold px-8 py-3 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-glow focus:ring-offset-2 focus:ring-offset-noir-bg">
+           class="btn-ghost inline-flex items-center justify-center gap-2 bg-transparent border border-accent text-accent font-semibold px-8 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-glow focus:ring-offset-2 focus:ring-offset-noir-bg">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           Ask My AI Agent
         </a>
         <!-- CV button -->
-        <div class="relative group">
-          <button class="inline-flex items-center justify-center gap-2 bg-transparent border border-noir-border text-text-muted hover:border-accent-glow hover:text-accent-glow font-semibold px-8 py-3 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-glow focus:ring-offset-2 focus:ring-offset-noir-bg w-full sm:w-auto">
+        <div class="relative" id="cv-dropdown-wrapper">
+          <button id="cv-dropdown-btn" class="btn-cv inline-flex items-center justify-center gap-2 bg-transparent border border-noir-border text-text-muted font-semibold px-8 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-glow focus:ring-offset-2 focus:ring-offset-noir-bg w-full sm:w-auto" aria-haspopup="true" aria-expanded="false">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             My CV
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <svg id="cv-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <!-- Dropdown -->
-          <div class="absolute top-full mt-2 left-0 right-0 bg-noir-surface border border-noir-border rounded-lg overflow-hidden shadow-xl opacity-0 invisible group-focus-within:opacity-100 group-focus-within:visible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-20">
-            <a href="Omar-Abdelghany-Resume.pdf" target="_blank" rel="noopener noreferrer"
-               class="flex items-center gap-3 px-4 py-3 text-sm text-text-muted hover:text-white hover:bg-accent/10 transition-colors duration-150">
-              <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-              View CV
-            </a>
-            <a href="Omar-Abdelghany-Resume.pdf" download="Omar-Abdelghany-Resume.pdf"
-               class="flex items-center gap-3 px-4 py-3 text-sm text-text-muted hover:text-white hover:bg-accent/10 transition-colors duration-150 border-t border-noir-border">
-              <svg class="w-4 h-4 text-accent shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-              Download CV
-            </a>
-          </div>
         </div>
       </div>
       <!-- Stats bar — centered below buttons -->
@@ -1149,7 +1254,7 @@
 
         <!-- Brand -->
         <div>
-          <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200">omar@agent:~$</a>
+          <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200">Omar Abdelghany</a>
           <p class="text-text-muted text-sm mt-3 leading-relaxed">AI Engineer & CS Student at MIU.<br/>Building autonomous intelligence.</p>
           <div class="mt-4 inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 rounded-full px-3 py-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
@@ -1161,12 +1266,12 @@
         <div>
           <p class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono mb-4">Navigation</p>
           <ul class="space-y-2">
-            <li><a href="#home"          class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Home</a></li>
-            <li><a href="#skills"        class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Skills</a></li>
-            <li><a href="#ai-sandbox"    class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The AI Sandbox</a></li>
-            <li><a href="#project-vault" class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Project Vault</a></li>
-            <li><a href="#journey"       class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The Journey</a></li>
-            <li><a href="#contact"       class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Contact</a></li>
+            <li><a href="#home"          class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Home</a></li>
+            <li><a href="#skills"        class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Skills</a></li>
+            <li><a href="#ai-sandbox"    class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The AI Sandbox</a></li>
+            <li><a href="#project-vault" class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Project Vault</a></li>
+            <li><a href="#journey"       class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The Journey</a></li>
+            <li><a href="#contact"       class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Contact</a></li>
           </ul>
         </div>
 
@@ -1177,25 +1282,25 @@
             <li>
               <a href="mailto:omar.abdelghannyy@gmail.com" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
                 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                omar.abdelghannyy@gmail.com
+                <span class="footer-link">omar.abdelghannyy@gmail.com</span>
               </a>
             </li>
             <li>
               <a href="https://wa.me/201121183553" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
                 <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                +20 112 118 3553
+                <span class="footer-link">+20 112 118 3553</span>
               </a>
             </li>
             <li>
               <a href="https://github.com/O-Abdelghany" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
                 <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-                github.com/O-Abdelghany
+                <span class="footer-link">github.com/O-Abdelghany</span>
               </a>
             </li>
             <li>
               <a href="https://www.linkedin.com/in/omarabdelghany/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
                 <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                linkedin.com/in/omarabdelghany
+                <span class="footer-link">linkedin.com/in/omarabdelghany</span>
               </a>
             </li>
           </ul>
@@ -1208,7 +1313,7 @@
       <!-- Bottom row -->
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
         <p class="font-mono text-xs text-text-muted">
-          © 2025 Omar Abd El Ghany · Built with <span class="text-accent-glow">Gemini 2.5</span> · Tailwind · Vanilla JS
+          © 2025 <span class="text-accent-glow">Omar Abd El Ghany</span>
         </p>
         <!-- Back to top -->
         <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
@@ -1235,6 +1340,66 @@
         const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
         if (progressBar) progressBar.style.width = pct + '%';
       }, { passive: true });
+
+      // CV dropdown — appended to body to escape all stacking contexts
+      const cvBtn     = document.getElementById('cv-dropdown-btn');
+      const cvChevron = document.getElementById('cv-chevron');
+      if (cvBtn) {
+        const cvMenu = document.createElement('div');
+        cvMenu.id = 'cv-dropdown-menu';
+        cvMenu.innerHTML = `
+          <a href="Omar-Abdelghany-Resume.pdf" target="_blank" rel="noopener noreferrer"
+             style="display:flex;align-items:center;gap:12px;padding:12px 16px;font-size:14px;text-decoration:none;transition:background 150ms,color 150ms;">
+            <svg style="width:16px;height:16px;color:#7c3aed;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            View CV
+          </a>
+          <a href="Omar-Abdelghany-Resume.pdf" download="Omar-Abdelghany-Resume.pdf"
+             style="display:flex;align-items:center;gap:12px;padding:12px 16px;font-size:14px;text-decoration:none;transition:background 150ms,color 150ms;">
+            <svg style="width:16px;height:16px;color:#7c3aed;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download CV
+          </a>`;
+        cvMenu.style.cssText = 'display:none;position:fixed;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:99999;min-width:160px;overflow:hidden;border:1px solid;';
+        document.body.appendChild(cvMenu);
+
+        function applyTheme() {
+          const light = document.body.classList.contains('light-mode');
+          const bg     = light ? '#ffffff' : '#0f0f1a';
+          const border = light ? '#e2e0f0' : '#1e1e3a';
+          const text   = light ? '#5a5a7a' : '#94a3b8';
+          const hover  = light ? '#1a1a2e' : '#ffffff';
+          cvMenu.style.background   = bg;
+          cvMenu.style.borderColor  = border;
+          cvMenu.querySelectorAll('a').forEach((a, i) => {
+            a.style.color = text;
+            if (i > 0) a.style.borderTop = '1px solid ' + border;
+            a.onmouseover = () => { a.style.background = 'rgba(124,58,237,0.1)'; a.style.color = hover; };
+            a.onmouseout  = () => { a.style.background = ''; a.style.color = text; };
+          });
+        }
+
+        function openDropdown() {
+          applyTheme();
+          const r = cvBtn.getBoundingClientRect();
+          cvMenu.style.top   = (r.bottom + 6) + 'px';
+          cvMenu.style.left  = r.left + 'px';
+          cvMenu.style.width = r.width + 'px';
+          cvMenu.style.display = 'block';
+          cvBtn.setAttribute('aria-expanded', 'true');
+          if (cvChevron) cvChevron.style.transform = 'rotate(180deg)';
+        }
+        function closeDropdown() {
+          cvMenu.style.display = 'none';
+          cvBtn.setAttribute('aria-expanded', 'false');
+          if (cvChevron) cvChevron.style.transform = '';
+        }
+        cvBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          cvMenu.style.display === 'block' ? closeDropdown() : openDropdown();
+        });
+        document.addEventListener('click', (e) => {
+          if (!cvBtn.contains(e.target) && !cvMenu.contains(e.target)) closeDropdown();
+        });
+      }
 
       if (window.VANTA && window.VANTA.NET && !prefersReduced) {
         const vantaEffect = VANTA.NET({

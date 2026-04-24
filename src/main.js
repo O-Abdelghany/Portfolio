@@ -39,21 +39,59 @@ function initDimMode() {
   });
 }
 
+// Keep track of the active Vanta instance globally or in your state
+let currentVantaEffect = null;
+
 function updateVantaColors(isLight) {
-  // Access the Vanta effect instance stored on the element
+  // 1. Completely destroy the existing effect if it exists
   const el = document.getElementById('vanta-bg');
-  if (!el || !el._vanta) return;
+  
+  if (currentVantaEffect) {
+    currentVantaEffect.destroy();
+  } else if (el && el._vanta) {
+    // Fallback just in case it was initialized elsewhere
+    el._vanta.destroy(); 
+  }
+
+  // 2. Re-initialize a brand new instance with the exact theme settings
   if (isLight) {
-    el._vanta.setOptions({
-      color: 0x9333ea,
-      backgroundColor: 0xf0eeff,
+    currentVantaEffect = VANTA.NET({
+      el: "#vanta-bg",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0x581c87,         // Dark purple forces line visibility
+      backgroundColor: 0xf0eeff, 
+      points: 10.00,           // Original density
+      maxDistance: 20.00,
+      spacing: 15.00,
+      showDots: true
     });
   } else {
-    el._vanta.setOptions({
-      color: 0x7c3aed,
+    currentVantaEffect = VANTA.NET({
+      el: "#vanta-bg",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0x7c3aed,         // Original neon purple
       backgroundColor: 0x080810,
+      points: 10.00,           // Original density
+      maxDistance: 20.00,
+      spacing: 15.00,
+      showDots: true
     });
   }
+
+  // Store the new instance back on the element
+  if (el) el._vanta = currentVantaEffect;
 }
 
 // ── Scroll-reveal for Journey milestones ──────────────────────────────────────
