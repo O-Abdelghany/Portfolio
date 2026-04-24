@@ -643,13 +643,13 @@
 
   <!-- ===== NAV BAR ===== -->
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-noir-bg/95 backdrop-blur border-b border-noir-border">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
-      <!-- Logo -->
-      <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow rounded">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center h-16">
+      <!-- Logo — fixed width left -->
+      <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow rounded w-40 shrink-0">
         Omar Abdelghany
       </a>
-      <!-- Desktop links -->
-      <ul class="hidden md:flex items-center gap-8" role="list">
+      <!-- Desktop links — truly centered -->
+      <ul class="hidden md:flex flex-1 items-center justify-center gap-8" role="list">
         <li><a href="#home"          class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="home">Home</a></li>
         <li><a href="#skills"        class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="skills">Skills</a></li>
         <li><a href="#ai-sandbox"    class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="ai-sandbox">The AI Sandbox</a></li>
@@ -658,7 +658,7 @@
         <li><a href="#contact"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="contact">Contact</a></li>
       </ul>
       <!-- Dim mode toggle + Mobile hamburger -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center justify-end gap-2 w-40 shrink-0">
         <button id="dim-toggle" aria-label="Toggle dim mode"
           class="text-text-muted hover:text-accent-glow focus:outline-none focus:ring-2 focus:ring-accent-glow rounded p-1.5 transition-colors duration-200">
           <!-- Moon icon (default) -->
