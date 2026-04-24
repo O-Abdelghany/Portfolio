@@ -7,13 +7,54 @@ import { initProjects }  from './projects.js';
 import { initChat }      from './chat.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  initAnimation();
+  // initAnimation() — replaced by Vanta NET global background
   initNav();
   initProjects();
   initChat();
   initScrollReveal();
   initContactForm();
+  initDimMode();
 });
+
+// ── Dim mode toggle ───────────────────────────────────────────────────────────
+function initDimMode() {
+  const btn  = document.getElementById('dim-toggle');
+  const moon = document.getElementById('dim-icon-moon');
+  const sun  = document.getElementById('dim-icon-sun');
+  if (!btn) return;
+
+  if (localStorage.getItem('lightMode') === 'on') {
+    document.body.classList.add('light-mode');
+    moon.classList.add('hidden');
+    sun.classList.remove('hidden');
+    updateVantaColors(true);
+  }
+
+  btn.addEventListener('click', () => {
+    const isLight = document.body.classList.toggle('light-mode');
+    moon.classList.toggle('hidden', isLight);
+    sun.classList.toggle('hidden', !isLight);
+    localStorage.setItem('lightMode', isLight ? 'on' : 'off');
+    updateVantaColors(isLight);
+  });
+}
+
+function updateVantaColors(isLight) {
+  // Access the Vanta effect instance stored on the element
+  const el = document.getElementById('vanta-bg');
+  if (!el || !el._vanta) return;
+  if (isLight) {
+    el._vanta.setOptions({
+      color: 0x9333ea,
+      backgroundColor: 0xf0eeff,
+    });
+  } else {
+    el._vanta.setOptions({
+      color: 0x7c3aed,
+      backgroundColor: 0x080810,
+    });
+  }
+}
 
 // ── Scroll-reveal for Journey milestones ──────────────────────────────────────
 function initScrollReveal() {
@@ -40,6 +81,34 @@ function initScrollReveal() {
   );
 
   entries.forEach(el => observer.observe(el));
+
+  // ── Divider explosion animation ──────────────────────────────────────────
+  const dividers = document.querySelectorAll('.section-divider');
+  const dividerObserver = new IntersectionObserver(
+    (items) => {
+      items.forEach(item => {
+        if (item.isIntersecting) {
+          const divider = item.target;
+          dividerObserver.unobserve(divider);
+          if (prefersReduced.matches) {
+            divider.classList.add('exploded', 'pulsing');
+            return;
+          }
+          // Step 1: diamond appears charged
+          setTimeout(() => divider.classList.add('charged'), 100);
+          // Step 2: explosion + lines shoot out
+          setTimeout(() => {
+            divider.classList.remove('charged');
+            divider.classList.add('exploded');
+          }, 600);
+          // Step 3: pulse starts
+          setTimeout(() => divider.classList.add('pulsing'), 1200);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+  dividers.forEach(d => dividerObserver.observe(d));
 }
 
 // ── Contact form ──────────────────────────────────────────────────────────────

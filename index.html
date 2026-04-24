@@ -30,6 +30,10 @@
     }
   </script>
 
+  <!-- Three.js + Vanta NET (global background) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,7 +42,17 @@
   <style>
     html { scroll-behavior: smooth; }
     body { background-color: #080810; color: #ffffff; font-family: 'Inter', system-ui, sans-serif; }
+    /* All sections transparent so Vanta background shows through */
+    section, footer, nav { position: relative; z-index: 1; }
+    section[id] {
+      background-color: rgba(8,8,16,0.88) !important;
+      border-top: 1px solid rgba(30,30,58,0.8);
+    }
+    section[id="home"] { border-top: none; background-color: rgba(8,8,16,0.55) !important; }
+    footer  { background-color: rgba(8,8,16,0.92) !important; }
+    nav#navbar { background-color: rgba(8,8,16,0.94) !important; }
 
+    /* ── Animations ─────────────────────────────────────────── */
     @media (prefers-reduced-motion: no-preference) {
       @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(28px); }
@@ -60,6 +74,14 @@
         0%, 100% { opacity: 1; }
         50%       { opacity: 0; }
       }
+      @keyframes shimmer {
+        0%   { background-position: -200% center; }
+        100% { background-position:  200% center; }
+      }
+      @keyframes pulseGlow {
+        0%, 100% { box-shadow: 0 0 16px rgba(124,58,237,0.3); }
+        50%       { box-shadow: 0 0 32px rgba(168,85,247,0.6); }
+      }
       .animate-fade-in-up    { animation: fadeInUp    800ms ease both; }
       .animate-fade-in-up-d1 { animation: fadeInUp    800ms 200ms ease both; }
       .animate-fade-in-up-d2 { animation: fadeInUp    800ms 400ms ease both; }
@@ -69,26 +91,234 @@
       .animate-blink         { animation: blink 1s step-end infinite; }
     }
 
-    /* Card hover glow */
+    /* ── Hero radial glow ───────────────────────────────────── */
+    .hero-glow {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -60%);
+      width: 600px; height: 600px;
+      background: radial-gradient(ellipse at center, rgba(124,58,237,0.18) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── Gradient text label ────────────────────────────────── */
+    .section-label {
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* ── Primary button shimmer ─────────────────────────────── */
+    .btn-primary {
+      position: relative;
+      overflow: hidden;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .btn-primary::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
+        background-size: 200% 100%;
+        opacity: 0;
+        transition: opacity 200ms ease;
+      }
+      .btn-primary:hover::after {
+        opacity: 1;
+        animation: shimmer 600ms ease forwards;
+      }
+    }
+
+    /* ── Project card gradient border on hover ──────────────── */
     .project-card {
-      transition: transform 300ms ease, box-shadow 300ms ease;
+      transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+      position: relative;
     }
     .project-card:hover {
       transform: translateY(-6px);
-      box-shadow: 0 0 32px rgba(124, 58, 237, 0.35);
+      box-shadow: 0 0 0 1px rgba(168,85,247,0.5), 0 8px 40px rgba(124,58,237,0.3);
+      border-color: transparent !important;
     }
 
-    /* Timeline connector */
+    /* ── Timeline card hover lift ───────────────────────────── */
+    .timeline-card {
+      transition: transform 250ms ease, box-shadow 250ms ease;
+    }
+    .timeline-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 24px rgba(124,58,237,0.2);
+    }
+
+    /* ── Timeline connector ─────────────────────────────────── */
     .timeline-line {
       background: linear-gradient(to bottom, #7c3aed, #1e1e3a);
     }
 
-    /* Terminal scrollbar */
+    /* ── Terminal scanline overlay ──────────────────────────── */
+    .terminal-scanlines {
+      position: relative;
+    }
+    .terminal-scanlines::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.06) 2px,
+        rgba(0,0,0,0.06) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+      border-radius: inherit;
+    }
+
+    /* ── Terminal scrollbar ─────────────────────────────────── */
     #chat-log::-webkit-scrollbar { width: 4px; }
     #chat-log::-webkit-scrollbar-track { background: #0f0f1a; }
-    #chat-log::-webkit-scrollbar-thumb { background: #1e1e3a; border-radius: 2px; }
+    #chat-log::-webkit-scrollbar-thumb { background: #7c3aed55; border-radius: 2px; }
+    #chat-log::-webkit-scrollbar-thumb:hover { background: #a855f7; }
 
-    /* Nav link transition */
+    /* ── Pulse divider ──────────────────────────────────────── */
+    .section-divider {
+      position: relative;
+      height: 20px;
+      margin: 0 auto;
+      max-width: 900px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+    }
+
+    /* The two lines (left and right of diamond) */
+    .section-divider .line-left,
+    .section-divider .line-right {
+      height: 1px;
+      flex: 1;
+      background: rgba(30,30,58,0.8);
+      transform-origin: center;
+      transform: scaleX(0);
+      transition: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .section-divider .line-left  { transform-origin: right center; }
+    .section-divider .line-right { transform-origin: left center; }
+
+    /* Diamond node */
+    .section-divider .node {
+      width: 8px;
+      height: 8px;
+      background: #7c3aed;
+      transform: rotate(45deg) scale(0);
+      border-radius: 1px;
+      flex-shrink: 0;
+      margin: 0 8px;
+      box-shadow: 0 0 0 0 rgba(168,85,247,0);
+      transition: none;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Charged state */
+    .section-divider.charged .node {
+      transform: rotate(45deg) scale(1);
+      box-shadow: 0 0 12px 4px rgba(168,85,247,0.8), 0 0 24px 8px rgba(124,58,237,0.4);
+      transition: transform 300ms cubic-bezier(0.34,1.56,0.64,1), box-shadow 300ms ease;
+    }
+
+    /* Explode state */
+    .section-divider.exploded .node {
+      transform: rotate(45deg) scale(0.8);
+      box-shadow:
+        0 0 0 12px rgba(168,85,247,0.15),
+        0 0 0 28px rgba(124,58,237,0.08),
+        0 0 60px 20px rgba(168,85,247,0.5);
+      transition: transform 150ms ease-out, box-shadow 600ms ease-out;
+    }
+
+    /* Lines extend after explosion — both at same time, no delay */
+    .section-divider.exploded .line-left,
+    .section-divider.exploded .line-right {
+      transform: scaleX(1);
+      transition: transform 600ms cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .section-divider .node::before,
+    .section-divider .node::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 2px;
+      border: 2px solid rgba(168,85,247,0);
+      transform: rotate(0deg) scale(1);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .section-divider.exploded .node::before {
+        animation: ring-burst 600ms ease-out forwards;
+      }
+      .section-divider.exploded .node::after {
+        animation: ring-burst 600ms ease-out 100ms forwards;
+      }
+      @keyframes ring-burst {
+        0%   { transform: scale(1);  border-color: rgba(168,85,247,0.9); opacity: 1; }
+        100% { transform: scale(6);  border-color: rgba(168,85,247,0);   opacity: 0; }
+      }
+    }
+
+    /* Pulse after lines extend */
+    @media (prefers-reduced-motion: no-preference) {
+      .section-divider.pulsing .line-left::after,
+      .section-divider.pulsing .line-right::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        width: 30%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, #a855f7, transparent);
+        filter: blur(1px);
+        animation: pulse-travel 2.8s ease-in-out infinite;
+      }
+      .section-divider.pulsing .line-left::after {
+        right: -30%;
+        animation: pulse-travel-left 2.8s ease-in-out infinite;
+      }
+      .section-divider.pulsing .line-right::after {
+        left: -30%;
+        animation: pulse-travel-right 2.8s ease-in-out infinite;
+      }
+      @keyframes pulse-travel-right {
+        0%   { left: -30%; opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 1; }
+        100% { left: 100%; opacity: 0; }
+      }
+      @keyframes pulse-travel-left {
+        0%   { right: -30%; opacity: 0; }
+        10%  { opacity: 1; }
+        90%  { opacity: 1; }
+        100% { right: 100%; opacity: 0; }
+      }
+      /* Node idle glow after activation */
+      .section-divider.pulsing .node {
+        transform: rotate(45deg) scale(1);
+        animation: node-idle 3s ease-in-out infinite;
+      }
+      @keyframes node-idle {
+        0%, 100% { box-shadow: 0 0 8px 2px rgba(168,85,247,0.6); }
+        50%       { box-shadow: 0 0 16px 6px rgba(168,85,247,0.9); }
+      }
+    }
+
+    /* ── Nav link ───────────────────────────────────────────── */
     .nav-link {
       transition: color 200ms ease;
       position: relative;
@@ -98,20 +328,197 @@
       position: absolute;
       bottom: -2px; left: 0; right: 0;
       height: 2px;
-      background: #a855f7;
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
       transform: scaleX(0);
-      transition: transform 200ms ease;
+      transition: transform 250ms ease;
+      border-radius: 1px;
     }
     .nav-link.active::after,
     .nav-link:hover::after { transform: scaleX(1); }
     .nav-link.active { color: #a855f7; }
 
-    /* Opacity-0 initial state for scroll-reveal */
+    /* ── Scroll progress bar ────────────────────────────────── */
+    #scroll-progress {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #7c3aed, #a855f7);
+      z-index: 100;
+      transition: width 50ms linear;
+    }
     .reveal { opacity: 0; }
     .reveal.visible { opacity: 1; }
+
+    /* ── Gradient border utility ────────────────────────────── */
+    .gradient-border {
+      border: 1px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+    }
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg, #7c3aed33, #1e1e3a, #a855f733);
+      z-index: -1;
+    }
+
+    /* ── Skill badges ───────────────────────────────────────── */
+    .skill-badge {
+      display: inline-flex;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: #94a3b8;
+      background: rgba(30,30,58,0.6);
+      border: 1px solid #1e1e3a;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      transition: all 200ms ease;
+    }
+    .skill-badge:hover {
+      color: #ffffff;
+      border-color: #7c3aed55;
+      background: rgba(124,58,237,0.1);
+    }
+    .skill-badge-glow {
+      color: #a855f7;
+      border-color: #7c3aed44;
+      background: rgba(124,58,237,0.08);
+    }
+    .skill-badge-glow:hover {
+      color: #ffffff;
+      border-color: #a855f7;
+      background: rgba(168,85,247,0.15);
+    }
+
+    /* ── Light mode ─────────────────────────────────────────── */
+    body.light-mode {
+      background-color: #adaabd !important;
+      color: #1a1a2e !important;
+    }
+    body.light-mode .bg-noir-bg      { background-color: #f8f7ff !important; }
+    body.light-mode .bg-noir-surface { background-color: #ffffff !important; }
+    body.light-mode .border-noir-border { border-color: #e2e0f0 !important; }
+    body.light-mode #navbar {
+      background-color: rgba(248,247,255,0.95) !important;
+      border-bottom-color: #e2e0f0 !important;
+    }
+    body.light-mode .text-text-primary { color: #1a1a2e !important; }
+    body.light-mode .text-text-muted   { color: #5a5a7a !important; }
+    body.light-mode .text-white        { color: #1a1a2e !important; }
+    body.light-mode h1, body.light-mode h2, body.light-mode h3 { color: #1a1a2e !important; }
+    body.light-mode p  { color: #5a5a7a; }
+
+    /* Nav logo + links */
+    body.light-mode .nav-link { color: #5a5a7a !important; }
+    body.light-mode .nav-link.active { color: #7c3aed !important; }
+    body.light-mode .nav-link:hover  { color: #1a1a2e !important; }
+
+    /* Cards */
+    body.light-mode .bg-noir-surface,
+    body.light-mode .project-card,
+    body.light-mode .timeline-card {
+      background-color: #ffffff !important;
+      border-color: #e2e0f0 !important;
+      box-shadow: 0 1px 8px rgba(124,58,237,0.06);
+    }
+    body.light-mode .project-card:hover {
+      box-shadow: 0 0 0 1px rgba(124,58,237,0.4), 0 8px 32px rgba(124,58,237,0.15) !important;
+    }
+
+    /* Terminal in light mode — dark gradient with purple glow */
+    body.light-mode .terminal-scanlines {
+      background: linear-gradient(135deg, #0d0d1a 0%, #1a0a2e 50%, #0a1628 100%) !important;
+      border: 1px solid rgba(124,58,237,0.5) !important;
+      box-shadow: 0 0 0 1px rgba(168,85,247,0.2), 0 20px 60px rgba(124,58,237,0.25), 0 0 40px rgba(124,58,237,0.1) !important;
+    }
+    body.light-mode #chat-log {
+      background: linear-gradient(180deg, #0d0d1a 0%, #0a0a18 100%) !important;
+    }
+    body.light-mode .border-noir-border { border-color: #e2e0f0 !important; }
+    /* Suggested prompt chips in light mode */
+    body.light-mode .suggested-prompt {
+      background: rgba(124,58,237,0.08) !important;
+      border-color: rgba(124,58,237,0.3) !important;
+      color: #5a3a8a !important;
+    }
+    body.light-mode .suggested-prompt:hover {
+      background: rgba(124,58,237,0.15) !important;
+      border-color: #7c3aed !important;
+      color: #7c3aed !important;
+    }
+
+    /* Skill badges */
+    body.light-mode .skill-badge {
+      background: rgba(124,58,237,0.06) !important;
+      border-color: #d4d0f0 !important;
+      color: #5a5a7a !important;
+    }
+    body.light-mode .skill-badge:hover {
+      background: rgba(124,58,237,0.12) !important;
+      color: #1a1a2e !important;
+    }
+    body.light-mode .skill-badge-glow {
+      background: rgba(124,58,237,0.1) !important;
+      border-color: #b8b0e8 !important;
+      color: #7c3aed !important;
+    }
+
+    /* Section divider */
+    body.light-mode .section-divider {
+      background: transparent !important;
+    }
+    body.light-mode .section-divider::after {
+      background: linear-gradient(90deg, transparent, #7c3aed, #a855f7, #7c3aed, transparent) !important;
+    }
+    body.light-mode .section-divider .line-left,
+    body.light-mode .section-divider .line-right {
+      background: rgba(124,58,237,0.3) !important;
+    }
+    body.light-mode .section-divider .node {
+      background: #7c3aed !important;
+    }
+
+    /* Timeline line */
+    body.light-mode .timeline-line {
+      background: linear-gradient(to bottom, #7c3aed, #5346a1) !important;
+    }
+
+    /* Availability badge */
+    body.light-mode .bg-green-500\/10 { background-color: rgba(34,197,94,0.1) !important; }
+
+    /* Light mode section overlays */
+    body.light-mode section[id] {
+      background-color: rgba(240,238,255,0.88) !important;
+    }
+    body.light-mode section[id="home"] {
+      background-color: rgba(240,238,255,0.55) !important;
+    }
+    body.light-mode footer {
+      background-color: rgba(235,232,255,0.95) !important;
+    }
+    body.light-mode nav#navbar {
+      background-color: rgba(248,247,255,0.96) !important;
+    }
+
+    /* Footer */
+    body.light-mode footer { background-color: #f0eeff !important; border-top-color: #e2e0f0 !important; }
+    body.light-mode footer p, body.light-mode footer a { color: #5a5a7a !important; }
+
+    /* ── Light mode toggle button ────────────────────────────── */
+    #dim-toggle {
+      transition: all 200ms ease;
+    }
   </style>
 </head>
 <body class="bg-noir-bg text-text-primary font-sans">
+  <!-- Vanta NET global background -->
+  <div id="vanta-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></div>
+  <!-- Scroll progress bar -->
+  <div id="scroll-progress"></div>
 
   <!-- ===== NAV BAR ===== -->
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-noir-bg/95 backdrop-blur border-b border-noir-border">
@@ -123,22 +530,33 @@
       <!-- Desktop links -->
       <ul class="hidden md:flex items-center gap-8" role="list">
         <li><a href="#home"          class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="home">Home</a></li>
+        <li><a href="#skills"        class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="skills">Skills</a></li>
         <li><a href="#ai-sandbox"    class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="ai-sandbox">The AI Sandbox</a></li>
         <li><a href="#project-vault" class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="project-vault">Project Vault</a></li>
         <li><a href="#journey"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="journey">The Journey</a></li>
         <li><a href="#contact"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="contact">Contact</a></li>
       </ul>
-      <!-- Mobile hamburger -->
-      <button id="mobile-menu-btn" class="md:hidden text-text-muted hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-glow rounded p-1" aria-label="Toggle navigation menu" aria-expanded="false">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
+      <!-- Dim mode toggle + Mobile hamburger -->
+      <div class="flex items-center gap-2">
+        <button id="dim-toggle" aria-label="Toggle dim mode"
+          class="text-text-muted hover:text-accent-glow focus:outline-none focus:ring-2 focus:ring-accent-glow rounded p-1.5 transition-colors duration-200">
+          <!-- Moon icon (default) -->
+          <svg id="dim-icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          <!-- Sun icon (dim mode) -->
+          <svg id="dim-icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </button>
+        <button id="mobile-menu-btn" class="md:hidden text-text-muted hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-glow rounded p-1" aria-label="Toggle navigation menu" aria-expanded="false">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
     </div>
     <!-- Mobile menu -->
     <div id="mobile-menu" class="hidden md:hidden bg-noir-surface border-t border-noir-border px-4 py-4">
       <ul class="flex flex-col gap-4" role="list">
         <li><a href="#home"          class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="home">Home</a></li>
+        <li><a href="#skills"        class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="skills">Skills</a></li>
         <li><a href="#ai-sandbox"    class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="ai-sandbox">The AI Sandbox</a></li>
         <li><a href="#project-vault" class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="project-vault">Project Vault</a></li>
         <li><a href="#journey"       class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="journey">The Journey</a></li>
@@ -148,15 +566,14 @@
   </nav>
 
   <!-- ===== HERO / HOME ===== -->
-  <section id="home" class="min-h-screen relative flex items-center justify-center bg-noir-bg overflow-hidden pt-16">
-    <canvas id="neural-bg" class="absolute inset-0 w-full h-full" aria-hidden="true"></canvas>
+  <section id="home" class="min-h-screen relative flex items-center justify-center bg-transparent overflow-hidden pt-16">
+    <div class="hero-glow"></div>
     <div class="relative z-10 text-center max-w-4xl mx-auto px-4 sm:px-6">
       <!-- Badge -->
       <div class="animate-fade-in-up inline-flex items-center gap-2 bg-noir-surface border border-noir-border rounded-full px-4 py-1.5 mb-8">
         <span class="w-2 h-2 rounded-full bg-accent-glow animate-pulse"></span>
         <span class="font-mono text-xs text-text-muted tracking-widest">AI ENGINEER · MIU · ECPC COMPETITOR</span>
-      </div>
-      <!-- Headline -->
+      </div>      <!-- Headline -->
       <h1 class="animate-fade-in-up-d1 text-4xl sm:text-5xl lg:text-6xl font-bold text-text-primary leading-tight mb-6">
         Omar Abdelghany<br/>
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-glow">Building Autonomous Intelligence.</span>
@@ -169,7 +586,7 @@
       <!-- CTAs -->
       <div class="animate-fade-in-up-d2 flex flex-col sm:flex-row gap-4 justify-center">
         <a href="#project-vault"
-           class="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-glow text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-glow focus:ring-offset-2 focus:ring-offset-noir-bg">
+           class="btn-primary inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-glow text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent-glow focus:ring-offset-2 focus:ring-offset-noir-bg">
           Explore My Work
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
@@ -200,26 +617,185 @@
           </div>
         </div>
       </div>
-      <!-- Scroll indicator -->
-      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-text-muted opacity-50">
-        <span class="font-mono text-xs tracking-widest">SCROLL</span>
-        <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      <!-- Stats bar — centered below buttons -->
+      <div class="animate-fade-in-up-d2 mt-14 pt-10 border-t border-noir-border/40 flex flex-wrap justify-center gap-6 sm:gap-10">
+        <div class="text-center">
+          <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-glow">230+</p>
+          <p class="text-xs text-text-muted mt-0.5 font-mono tracking-wide">Training Hours</p>
+        </div>
+        <div class="w-px bg-noir-border hidden sm:block"></div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-glow">14+</p>
+          <p class="text-xs text-text-muted mt-0.5 font-mono tracking-wide">ML Models Built</p>
+        </div>
+        <div class="w-px bg-noir-border hidden sm:block"></div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-glow">4</p>
+          <p class="text-xs text-text-muted mt-0.5 font-mono tracking-wide">Projects</p>
+        </div>
+        <div class="w-px bg-noir-border hidden sm:block"></div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-glow">2</p>
+          <p class="text-xs text-text-muted mt-0.5 font-mono tracking-wide">Internships</p>
+        </div>
+        <div class="w-px bg-noir-border hidden sm:block"></div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-glow">32</p>
+          <p class="text-xs text-text-muted mt-0.5 font-mono tracking-wide">Assignments</p>
+        </div>
+      </div>
+    </div>
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-text-muted opacity-50 z-10">
+      <span class="font-mono text-xs tracking-widest">SCROLL</span>
+      <svg class="w-4 h-4 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </div>
+  </section>
+
+  <!-- Section divider -->
+  <div class="section-divider"><div class="line-left"></div><div class="node"></div><div class="line-right"></div></div>
+
+  <!-- ===== SKILLS ===== -->  <section id="skills" class="min-h-screen bg-noir-bg flex items-center py-24 px-4">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-12">
+        <span class="section-label">Tech Stack</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-text-primary mt-2 mb-4">Skills & Tools</h2>
+        <p class="text-text-muted max-w-xl mx-auto">The toolkit. Built through internships, scholarships, and shipping real projects.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <!-- Languages -->
+        <div class="bg-noir-surface border border-noir-border rounded-xl p-5 hover:border-accent/50 transition-colors duration-200">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono">Languages</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-badge">Python</span>
+            <span class="skill-badge">C/C++</span>
+            <span class="skill-badge">Java</span>
+            <span class="skill-badge">SQL</span>
+            <span class="skill-badge">JavaScript</span>
+            <span class="skill-badge">HTML/CSS</span>
+          </div>
+        </div>
+
+        <!-- AI & NLP -->
+        <div class="bg-noir-surface border border-noir-border rounded-xl p-5 hover:border-accent/50 transition-colors duration-200">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-accent-glow/10 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-accent-glow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono">AI & NLP</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-badge skill-badge-glow">LangGraph</span>
+            <span class="skill-badge skill-badge-glow">RAG</span>
+            <span class="skill-badge skill-badge-glow">LLM Fine-tuning</span>
+            <span class="skill-badge">Ollama</span>
+            <span class="skill-badge">Hugging Face</span>
+            <span class="skill-badge">PyTorch</span>
+            <span class="skill-badge">TensorFlow</span>
+            <span class="skill-badge">Keras</span>
+          </div>
+        </div>
+
+        <!-- Data Science -->
+        <div class="bg-noir-surface border border-noir-border rounded-xl p-5 hover:border-accent/50 transition-colors duration-200">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono">Data Science</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-badge">Pandas</span>
+            <span class="skill-badge">NumPy</span>
+            <span class="skill-badge">Scikit-learn</span>
+            <span class="skill-badge">XGBoost</span>
+            <span class="skill-badge">Power BI</span>
+            <span class="skill-badge">Tableau</span>
+            <span class="skill-badge">MLflow</span>
+          </div>
+        </div>
+
+        <!-- Backend & Cloud -->
+        <div class="bg-noir-surface border border-noir-border rounded-xl p-5 hover:border-accent/50 transition-colors duration-200">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-green-500/10 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono">Backend & Cloud</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-badge">FastAPI</span>
+            <span class="skill-badge">Node.js</span>
+            <span class="skill-badge">Next.js</span>
+            <span class="skill-badge">Docker</span>
+            <span class="skill-badge">Milvus</span>
+            <span class="skill-badge">ChromaDB</span>
+            <span class="skill-badge">MongoDB</span>
+            <span class="skill-badge">n8n</span>
+          </div>
+        </div>
+
+        <!-- Concepts -->
+        <div class="bg-noir-surface border border-noir-border rounded-xl p-5 hover:border-accent/50 transition-colors duration-200">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono">Concepts</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-badge">Agentic AI</span>
+            <span class="skill-badge">Vector Search</span>
+            <span class="skill-badge">Computer Vision</span>
+            <span class="skill-badge">CI/CD</span>
+            <span class="skill-badge">REST API</span>
+            <span class="skill-badge">Agile/Scrum</span>
+            <span class="skill-badge">OOP</span>
+          </div>
+        </div>
+
+        <!-- Competitive -->
+        <div class="bg-noir-surface border border-noir-border rounded-xl p-5 hover:border-accent/50 transition-colors duration-200">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <span class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono">Competitive</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <span class="skill-badge skill-badge-glow">ECPC Contestant</span>
+            <span class="skill-badge">Dynamic Programming</span>
+            <span class="skill-badge">Graph Theory</span>
+            <span class="skill-badge">Data Structures</span>
+            <span class="skill-badge">C++</span>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
+
+  <!-- Section divider -->
+  <div class="section-divider"><div class="line-left"></div><div class="node"></div><div class="line-right"></div></div>
 
   <!-- ===== AI SANDBOX ===== -->
   <section id="ai-sandbox" class="min-h-screen bg-noir-bg py-24 px-4">
     <div class="max-w-4xl mx-auto">
       <!-- Section header -->
       <div class="text-center mb-12">
-        <span class="font-mono text-xs text-accent tracking-widest uppercase">Interactive</span>
+        <span class="section-label">Interactive</span>
         <h2 class="text-3xl sm:text-4xl font-bold text-text-primary mt-2 mb-4">The AI Sandbox</h2>
         <p class="text-text-muted max-w-xl mx-auto">Ask anything about Omar's skills, projects, or experience. The agent cites real GitHub code.</p>
       </div>
 
       <!-- Terminal window -->
-      <div class="bg-noir-surface border border-noir-border rounded-xl overflow-hidden shadow-2xl shadow-accent/10 font-mono">
+      <div class="terminal-scanlines bg-noir-surface border border-noir-border rounded-xl overflow-hidden shadow-2xl shadow-accent/10 font-mono">
         <!-- Terminal header bar -->
         <div class="flex items-center gap-2 px-4 py-3 bg-noir-bg border-b border-noir-border">
           <span class="w-3 h-3 rounded-full bg-red-500"></span>
@@ -275,11 +851,14 @@
     </div>
   </section>
 
+  <!-- Section divider -->
+  <div class="section-divider"><div class="line-left"></div><div class="node"></div><div class="line-right"></div></div>
+
   <!-- ===== PROJECT VAULT ===== -->
   <section id="project-vault" class="min-h-screen bg-noir-bg py-24 px-4">
     <div class="max-w-6xl mx-auto">
       <div class="text-center mb-16">
-        <span class="font-mono text-xs text-accent tracking-widest uppercase">Featured Work</span>
+        <span class="section-label">Featured Work</span>
         <h2 class="text-3xl sm:text-4xl font-bold text-text-primary mt-2 mb-4">Project Vault</h2>
         <p class="text-text-muted max-w-xl mx-auto">Each project is a technical problem solved. Click to inspect the code.</p>
       </div>
@@ -288,11 +867,14 @@
     </div>
   </section>
 
+  <!-- Section divider -->
+  <div class="section-divider"><div class="line-left"></div><div class="node"></div><div class="line-right"></div></div>
+
   <!-- ===== THE JOURNEY ===== -->
   <section id="journey" class="min-h-screen bg-noir-bg py-24 px-4">
     <div class="max-w-4xl mx-auto">
       <div class="text-center mb-16">
-        <span class="font-mono text-xs text-accent tracking-widest uppercase">Timeline</span>
+        <span class="section-label">Timeline</span>
         <h2 class="text-3xl sm:text-4xl font-bold text-text-primary mt-2 mb-4">The Journey</h2>
         <p class="text-text-muted max-w-xl mx-auto">Every challenge is a data point. Here's the training set.</p>
       </div>
@@ -304,76 +886,114 @@
 
         <div class="space-y-12" id="timeline-entries">
 
-          <!-- Milestone 1 -->
+          <!-- Milestone 1: MIU -->
           <div class="reveal flex gap-6 sm:gap-8 items-start" data-direction="left">
             <div class="shrink-0 relative z-10">
               <div class="w-12 h-12 rounded-full bg-noir-surface border-2 border-accent flex items-center justify-center">
                 <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
               </div>
             </div>
-            <div class="bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
+            <div class="timeline-card bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
               <div class="flex items-center gap-3 mb-3">
-                <span class="font-mono text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">2022 — Present</span>
+                <span class="font-mono text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">Oct 2023 — Present</span>
+                <span class="font-mono text-xs text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded">Active</span>
               </div>
               <h3 class="text-lg font-bold text-text-primary mb-2">Misr International University</h3>
-              <p class="text-text-muted text-sm leading-relaxed">
-                3rd-year Computer Science student at MIU. Focused on AI, machine learning, and software engineering. Building a foundation in algorithms, data structures, and system design while applying knowledge to real-world AI projects.
-              </p>
+              <p class="text-text-muted text-sm leading-relaxed">Bachelor of Computer Science, Major in Artificial Intelligence. Building a deep foundation in algorithms, data structures, and AI systems while applying knowledge to real-world projects.</p>
               <div class="mt-4 flex flex-wrap gap-2">
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Computer Science</span>
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">AI Specialization</span>
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">MIU</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">CS · AI Major</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Al-Obour, Egypt</span>
               </div>
             </div>
           </div>
 
-          <!-- Milestone 2 -->
+          <!-- Milestone 2: Teaching Assistant -->
+          <div class="reveal flex gap-6 sm:gap-8 items-start" data-direction="right">
+            <div class="shrink-0 relative z-10">
+              <div class="w-12 h-12 rounded-full bg-noir-surface border-2 border-accent flex items-center justify-center">
+                <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+            </div>
+            <div class="timeline-card bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="font-mono text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">Feb 2025 — Jun 2025</span>
+              </div>
+              <h3 class="text-lg font-bold text-text-primary mb-2">Computer Programming Co-Assistant · MIU</h3>
+              <p class="text-text-muted text-sm leading-relaxed">Assisted in delivering lab sessions at Misr International University, clarifying programming principles and boosting student problem-solving efficiency. Teaching sharpens your own understanding.</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Teaching</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Programming</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Milestone 3: NTG Clarity -->
+          <div class="reveal flex gap-6 sm:gap-8 items-start" data-direction="left">
+            <div class="shrink-0 relative z-10">
+              <div class="w-12 h-12 rounded-full bg-noir-surface border-2 border-accent-glow flex items-center justify-center">
+                <svg class="w-5 h-5 text-accent-glow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+            </div>
+            <div class="timeline-card bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="font-mono text-xs text-accent-glow bg-accent-glow/10 px-2 py-0.5 rounded">Jun 2025 — Sep 2025</span>
+                <span class="font-mono text-xs text-green-400 bg-green-400/10 px-2 py-0.5 rounded">Internship</span>
+              </div>
+              <h3 class="text-lg font-bold text-text-primary mb-2">AI Intern · NTG Clarity</h3>
+              <p class="text-text-muted text-sm leading-relaxed">Built 2 AI-powered full-stack apps using React/Next.js and FastAPI. Deployed 2 LLM-powered agents using LangGraph & Ollama with Docker and Milvus vector DB. Implemented CI/CD pipelines and worked in Agile/Scrum roles.</p>
+              <div class="mt-4 flex flex-wrap gap-2">
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">LangGraph</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Ollama</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Docker</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Milvus</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">FastAPI</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Milestone 4: ECPC -->
           <div class="reveal flex gap-6 sm:gap-8 items-start" data-direction="right">
             <div class="shrink-0 relative z-10">
               <div class="w-12 h-12 rounded-full bg-noir-surface border-2 border-accent-glow flex items-center justify-center">
                 <svg class="w-5 h-5 text-accent-glow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
               </div>
             </div>
-            <div class="bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
+            <div class="timeline-card bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
               <div class="flex items-center gap-3 mb-3">
-                <span class="font-mono text-xs text-accent-glow bg-accent-glow/10 px-2 py-0.5 rounded">2024</span>
-                <span class="font-mono text-xs text-green-400 bg-green-400/10 px-2 py-0.5 rounded">Technical Crucible</span>
+                <span class="font-mono text-xs text-accent-glow bg-accent-glow/10 px-2 py-0.5 rounded">Aug 2025</span>
+                <span class="font-mono text-xs text-yellow-400 bg-yellow-400/10 px-2 py-0.5 rounded">Technical Crucible</span>
               </div>
-              <h3 class="text-lg font-bold text-text-primary mb-2">ECPC Regional — 50th Place</h3>
-              <p class="text-text-muted text-sm leading-relaxed">
-                Competed in the Egyptian Collegiate Programming Contest Regional. Finishing 50th wasn't a loss — it was a stress-test. Under time pressure, with real constraints, the competition forced mastery of <span class="text-accent-glow font-medium">Algorithmic Optimization</span> and <span class="text-accent-glow font-medium">Stress-Management</span> that no classroom can replicate.
-              </p>
-              <blockquote class="mt-4 border-l-2 border-accent pl-4 text-text-muted text-sm italic">
-                "The ranking is a snapshot. The skills are permanent."
-              </blockquote>
+              <h3 class="text-lg font-bold text-text-primary mb-2">ECPC Regional — Contestant</h3>
+              <p class="text-text-muted text-sm leading-relaxed">Competed at AASTMT in a team of three, solving algorithmic problems under time pressure. Applied dynamic programming, graph theory, disjoint sets, and greedy techniques. The ranking is a snapshot — the skills are permanent.</p>
+              <blockquote class="mt-4 border-l-2 border-accent pl-4 text-text-muted text-sm italic">"Algorithmic Optimization and Stress-Management under competitive conditions."</blockquote>
               <div class="mt-4 flex flex-wrap gap-2">
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Algorithmic Optimization</span>
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Competitive Programming</span>
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Stress-Management</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">C++</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Dynamic Programming</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Graph Theory</span>
               </div>
             </div>
           </div>
 
-          <!-- Milestone 3 — AI Focus -->
+          <!-- Milestone 5: Samsung -->
           <div class="reveal flex gap-6 sm:gap-8 items-start" data-direction="left">
             <div class="shrink-0 relative z-10">
               <div class="w-12 h-12 rounded-full bg-noir-surface border-2 border-accent flex items-center justify-center">
                 <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
               </div>
             </div>
-            <div class="bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
+            <div class="timeline-card bg-noir-surface border border-noir-border rounded-xl p-6 flex-1">
               <div class="flex items-center gap-3 mb-3">
-                <span class="font-mono text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">2024 — Present</span>
-                <span class="font-mono text-xs text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded">Active</span>
+                <span class="font-mono text-xs text-accent bg-accent/10 px-2 py-0.5 rounded">Aug 2025 — Nov 2025</span>
+                <span class="font-mono text-xs text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded">Scholarship</span>
               </div>
-              <h3 class="text-lg font-bold text-text-primary mb-2">AI Specialization & Agentic Systems</h3>
-              <p class="text-text-muted text-sm leading-relaxed">
-                Deep-diving into Agentic RAG, LLM optimization, and autonomous AI systems. Building production-grade AI tools that go beyond demos — systems that reason, retrieve, and respond with cited evidence. Targeting AI engineering roles in the UAE tech ecosystem.
-              </p>
+              <h3 class="text-lg font-bold text-text-primary mb-2">AI Scholar · Samsung Innovation Campus</h3>
+              <p class="text-text-muted text-sm leading-relaxed">Selected for an intensive 4-month scholarship (230+ hours). Completed 32 practical assignments and 3 capstones covering ML, Deep Learning, GenAI, LLM Fine-tuning, RAG pipelines, and Agentic AI. Deployed via Flask/Streamlit with Power BI dashboards.</p>
               <div class="mt-4 flex flex-wrap gap-2">
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Agentic RAG</span>
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">LLM Optimization</span>
-                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">UAE AI Market</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">TensorFlow</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">LLM Fine-tuning</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">RAG</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">MLflow</span>
+                <span class="font-mono text-xs text-text-muted border border-noir-border px-2 py-0.5 rounded">Power BI</span>
               </div>
             </div>
           </div>
@@ -383,11 +1003,14 @@
     </div>
   </section>
 
+  <!-- Section divider -->
+  <div class="section-divider"><div class="line-left"></div><div class="node"></div><div class="line-right"></div></div>
+
   <!-- ===== CONTACT ===== -->
   <section id="contact" class="bg-noir-bg py-24 px-4">
     <div class="max-w-3xl mx-auto">
       <div class="text-center mb-12">
-        <span class="font-mono text-xs text-accent tracking-widest uppercase">Get In Touch</span>
+        <span class="section-label">Get In Touch</span>
         <h2 class="text-3xl sm:text-4xl font-bold text-text-primary mt-2 mb-4">Contact</h2>
         <p class="text-text-muted">Have a role, project, or idea? Omar's inbox is open.</p>
       </div>
@@ -518,14 +1141,134 @@
   </section>
 
   <!-- ===== FOOTER ===== -->
-  <footer class="bg-noir-bg border-t border-noir-border py-8 px-4 text-center">
-    <p class="font-mono text-xs text-text-muted">
-      <span class="text-accent-glow">omar@agent</span>:~$ Built with Gemini 1.5 Flash · Tailwind CSS · Vanilla JS
-    </p>
+  <footer class="bg-noir-bg border-t border-noir-border pt-12 pb-6 px-4">
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Top row: brand + nav + contact -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
+
+        <!-- Brand -->
+        <div>
+          <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200">omar@agent:~$</a>
+          <p class="text-text-muted text-sm mt-3 leading-relaxed">AI Engineer & CS Student at MIU.<br/>Building autonomous intelligence.</p>
+          <div class="mt-4 inline-flex items-center gap-2 bg-green-500/10 border border-green-500/30 rounded-full px-3 py-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+            <span class="text-green-400 text-xs font-medium">Open to UAE opportunities</span>
+          </div>
+        </div>
+
+        <!-- Quick nav -->
+        <div>
+          <p class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono mb-4">Navigation</p>
+          <ul class="space-y-2">
+            <li><a href="#home"          class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Home</a></li>
+            <li><a href="#skills"        class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Skills</a></li>
+            <li><a href="#ai-sandbox"    class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The AI Sandbox</a></li>
+            <li><a href="#project-vault" class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Project Vault</a></li>
+            <li><a href="#journey"       class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The Journey</a></li>
+            <li><a href="#contact"       class="text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact info -->
+        <div>
+          <p class="text-xs font-semibold text-text-muted uppercase tracking-widest font-mono mb-4">Contact</p>
+          <ul class="space-y-3">
+            <li>
+              <a href="mailto:omar.abdelghannyy@gmail.com" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
+                <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                omar.abdelghannyy@gmail.com
+              </a>
+            </li>
+            <li>
+              <a href="https://wa.me/201121183553" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                +20 112 118 3553
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/O-Abdelghany" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                github.com/O-Abdelghany
+              </a>
+            </li>
+            <li>
+              <a href="https://www.linkedin.com/in/omarabdelghany/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                linkedin.com/in/omarabdelghany
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="section-divider mb-6"></div>
+
+      <!-- Bottom row -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="font-mono text-xs text-text-muted">
+          © 2025 Omar Abd El Ghany · Built with <span class="text-accent-glow">Gemini 2.5</span> · Tailwind · Vanilla JS
+        </p>
+        <!-- Back to top -->
+        <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+          class="flex items-center gap-1.5 text-xs text-text-muted hover:text-accent-glow font-mono transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow rounded">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+          back to top
+        </button>
+      </div>
+    </div>
   </footer>
 
   <!-- ===== JS MODULES ===== -->
   <script type="module" src="src/main.js"></script>
+  <script>
+    // Init Vanta NET background
+    document.addEventListener('DOMContentLoaded', () => {
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Scroll progress bar
+      const progressBar = document.getElementById('scroll-progress');
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        if (progressBar) progressBar.style.width = pct + '%';
+      }, { passive: true });
+
+      if (window.VANTA && window.VANTA.NET && !prefersReduced) {
+        const vantaEffect = VANTA.NET({
+          el: '#vanta-bg',
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200,
+          minWidth: 200,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          color: 0x7c3aed,
+          backgroundColor: 0x080810,
+          points: 9,
+          maxDistance: 22,
+          spacing: 18,
+          showDots: true,
+        });
+        // Store instance on element for light mode toggling
+        document.getElementById('vanta-bg')._vanta = vantaEffect;
+
+        // Scroll-driven parallax: subtle scale on scroll for depth effect
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            requestAnimationFrame(() => {
+              ticking = false;
+            });
+            ticking = true;
+          }
+        }, { passive: true });
+      }
+    });
+  </script>
 
 </body>
 </html>

@@ -32,6 +32,7 @@ export function initNav() {
         e.preventDefault();
         const target = document.querySelector(href);
         target?.scrollIntoView({ behavior: 'smooth' });
+        link.blur(); // remove focus ring after click
       }
     });
   });

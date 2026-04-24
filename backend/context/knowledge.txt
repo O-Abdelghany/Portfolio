@@ -103,16 +103,16 @@ PROJECTS:
   URL: [omar-portfolio Repo](https://github.com/O-Abdelghany/omar-portfolio)
 
 * **Intelligent HR Agent** (RAG System): Engineered a **RAG** pipeline using **ChromaDB** and **all-MiniLM-L6-v2** to semantically rank candidates against Job Descriptions. Includes a **DistilBERT** sentiment analysis module for a better understanding of Employees feedbacks and an **OCR** engine for unstructured data.
-  URL: [View HR Agent Code](https://github.com/O-Abdelghany/HR-RAG-System)
+  URL: [View HR Agent Code](https://github.com/O-Abdelghany/intelligent-hr-agent)
 
-* **Face Detection Attendance System**: Real-time **Computer Vision** system using **OpenCV** and **FastAPI** for automated identity logging and data visualization.
-  URL: [View Face Detection Code](https://github.com/O-Abdelghany/HR-RAG-System)
+* **AIdentify/Face Detection Attendance System**: Real-time **Computer Vision** system using **OpenCV** and **FastAPI** for automated identity logging and data visualization.
+  URL: [View Face Detection Code](https://github.com/O-Abdelghany/AIdentify-ERP)
 
 * **Uber Data Analytics**: Conducted **EDA** and statistical analysis on ride data to identify cancellation root causes; visualized insights via an interactive **Power BI** dashboard.
-  URL: [View Uber Analytics Code](https://github.com/O-Abdelghany/HR-RAG-System)
+  URL: [View Uber Analytics Code](https://github.com/O-Abdelghany/uber-data-analytics)
 
 * **Predictive Cardiovascular Health**: Achieved **94% accuracy** using an optimized KNN model. Utilized **SMOTE** for class imbalance and **RobustScaler** for outlier management.
-  URL: [View Predictive Modeling Code](https://github.com/O-Abdelghany/HR-RAG-System)
+  URL: [View Predictive Modeling Code](https://github.com/O-Abdelghany/cardiovascular-health-predictor)
 
 * **Shortest Path Finder**: C++ implementation of the **Bellman-Ford algorithm**, comparing **Dynamic Programming** and **Edge Relaxation** approaches against **Dijkstra’s algorithm**.
   URL: [View Shortest Path Code](https://github.com/O-Abdelghany/HR-RAG-System)
