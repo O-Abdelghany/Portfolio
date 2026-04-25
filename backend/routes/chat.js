@@ -13,15 +13,21 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Fetch relevant GitHub repo context for the message
     const repoSummary = await githubService.getRepoSummary(message);
-
     const reply = await geminiService.chat(message.trim(), repoSummary);
     return res.json({ reply, citations: [] });
   } catch (err) {
     console.error('Chat error:', err);
-    return res.status(502).json({
-      error: 'The AI agent is temporarily unavailable. Please try again shortly.',
+    // Detect quota exhaustion (Gemini returns 429 or RESOURCE_EXHAUSTED)
+    const isQuota = err?.status === 429
+      || err?.message?.includes('429')
+      || err?.message?.includes('RESOURCE_EXHAUSTED')
+      || err?.message?.includes('quota');
+    return res.status(isQuota ? 429 : 502).json({
+      error: isQuota
+        ? 'Daily quota reached. The agent will be back tomorrow.'
+        : 'The AI agent is temporarily unavailable. Please try again shortly.',
+      code: isQuota ? 'QUOTA_EXCEEDED' : 'UNAVAILABLE',
     });
   }
 });

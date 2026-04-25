@@ -9,8 +9,28 @@ export function initChat() {
   const input   = document.getElementById('chat-input');
   const sendBtn = document.getElementById('chat-send');
   const prompts = document.querySelectorAll('.suggested-prompt');
+  const statusDot  = document.getElementById('agent-status-dot');
+  const statusText = statusDot?.nextElementSibling;
 
   if (!log || !input || !sendBtn) return;
+
+  // ── Check backend health on load ─────────────────────────────────────────
+  function setStatus(state) {
+    if (!statusDot || !statusText) return;
+    const states = {
+      online:  { dot: 'bg-green-500',  text: 'online',      label: 'online' },
+      quota:   { dot: 'bg-yellow-400', text: 'text-yellow-400', label: 'quota limit' },
+      offline: { dot: 'bg-red-500',    text: 'text-red-400',    label: 'offline' },
+    };
+    const s = states[state] || states.offline;
+    statusDot.className = 'w-2 h-2 rounded-full ' + s.dot;
+    statusText.textContent = s.label;
+    statusText.className = 'text-xs ' + (state === 'online' ? 'text-text-muted' : s.text);
+  }
+
+  fetch(API_URL.replace('/api/chat', '/health'))
+    .then(r => r.ok ? setStatus('online') : setStatus('offline'))
+    .catch(() => setStatus('offline'));
 
   prompts.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -45,6 +65,8 @@ export function initChat() {
       removeElement(indicator);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
+        if (res.status === 429) setStatus('quota');
+        else setStatus('offline');
         appendAgentBubble(err.error || 'Something went wrong. Please try again.', true);
       } else {
         const data = await res.json();
@@ -52,6 +74,7 @@ export function initChat() {
       }
     } catch {
       removeElement(indicator);
+      setStatus('offline');
       appendAgentBubble('Connection error — backend may not be running. [Contact Omar directly](#contact)', true);
     } finally {
       sendBtn.disabled = false;
