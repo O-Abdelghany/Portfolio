@@ -1,4 +1,4 @@
-# Omar Elshamy — Portfolio
+# Omar Abdelghany — Portfolio
 
 > "Building Autonomous Intelligence."
 
