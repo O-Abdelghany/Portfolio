@@ -14,23 +14,31 @@ export function initChat() {
 
   if (!log || !input || !sendBtn) return;
 
-  // ── Check backend health on load ─────────────────────────────────────────
+  // ── Continuous health polling every 10s ──────────────────────────────────
   function setStatus(state) {
     if (!statusDot || !statusText) return;
     const states = {
-      online:  { dot: 'bg-green-500',  text: 'online',      label: 'online' },
-      quota:   { dot: 'bg-yellow-400', text: 'text-yellow-400', label: 'quota limit' },
-      offline: { dot: 'bg-red-500',    text: 'text-red-400',    label: 'offline' },
+      online:  { dot: 'bg-green-500',  label: 'online',      cls: 'text-text-muted' },
+      quota:   { dot: 'bg-yellow-400', label: 'quota limit', cls: 'text-yellow-400' },
+      offline: { dot: 'bg-red-500',    label: 'offline',     cls: 'text-red-400' },
     };
     const s = states[state] || states.offline;
     statusDot.className = 'w-2 h-2 rounded-full ' + s.dot;
     statusText.textContent = s.label;
-    statusText.className = 'text-xs ' + (state === 'online' ? 'text-text-muted' : s.text);
+    statusText.className = 'text-xs ' + s.cls;
   }
 
-  fetch(API_URL.replace('/api/chat', '/health'))
-    .then(r => r.ok ? setStatus('online') : setStatus('offline'))
-    .catch(() => setStatus('offline'));
+  function checkHealth() {
+    fetch(API_URL.replace('/api/chat', '/health/full'))
+      .then(async r => {
+        const data = await r.json().catch(() => ({}));
+        setStatus(data.status || (r.ok ? 'online' : 'offline'));
+      })
+      .catch(() => setStatus('offline'));
+  }
+
+  checkHealth();
+  setInterval(checkHealth, 10000);
 
   prompts.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -70,6 +78,7 @@ export function initChat() {
         appendAgentBubble(err.error || 'Something went wrong. Please try again.', true);
       } else {
         const data = await res.json();
+        setStatus('online');
         await typewriterBubble(data.reply || 'No response received.');
       }
     } catch {
