@@ -582,6 +582,17 @@
     }
     body.light-mode a.flex.items-center.gap-3.bg-noir-surface:hover {
       background-color: #f5f3ff !important;
+      border-color: unset !important;
+    }
+    /* Restore specific hover border colors in light mode */
+    body.light-mode a.flex.items-center.gap-3.hover\:border-green-500:hover {
+      border-color: rgb(34,197,94) !important;
+    }
+    body.light-mode a.flex.items-center.gap-3.hover\:border-blue-500:hover {
+      border-color: rgb(59,130,246) !important;
+    }
+    body.light-mode a.flex.items-center.gap-3.hover\:border-accent:hover {
+      border-color: #7c3aed !important;
     }
 
     /* Contact form */
