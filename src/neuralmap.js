@@ -42,7 +42,7 @@ const PROJECT_NODES = [
     skills: ['python', 'data'], url: 'https://github.com/O-Abdelghany/uber-data-analytics' },
   { id: 'portfolio', label: 'Portfolio Agent', neuron: '2.5', tag: 'Agentic AI',
     desc: 'Recruiter co-pilot powered by Gemini 1.5 Flash with deep-linked citations and semantic search across projects.',
-    skills: ['python', 'rag', 'backend'], url: 'https://github.com/O-Abdelghany/omar-portfolio' },
+    skills: ['python', 'rag', 'backend'], url: 'https://github.com/O-Abdelghany/Portfolio.git' },
 ];
 
 const OUTPUT_URL = 'https://github.com/O-Abdelghany';
