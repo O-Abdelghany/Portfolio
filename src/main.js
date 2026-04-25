@@ -1,14 +1,12 @@
 /**
  * main.js — Entry point. Initialises all section modules.
  */
-import { initAnimation } from './animation.js';
 import { initNav }       from './nav.js';
 import { initProjects }  from './projects.js';
 import { initChat }      from './chat.js';
-import { initNeuralMap } from './neuralmap.js?v=38';
+import { initNeuralMap } from './neuralmap.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // initAnimation() — replaced by Vanta NET global background
   initNav();
   initProjects();
   initChat();
@@ -41,114 +39,60 @@ function initDimMode() {
   });
 }
 
-// Keep track of the active Vanta instance globally or in your state
 let currentVantaEffect = null;
 
 function updateVantaColors(isLight) {
-  // 1. Completely destroy the existing effect if it exists
-  const el = document.getElementById('vanta-bg');
-  
-  if (currentVantaEffect) {
-    currentVantaEffect.destroy();
-  } else if (el && el._vanta) {
-    // Fallback just in case it was initialized elsewhere
-    el._vanta.destroy(); 
-  }
+  if (currentVantaEffect) currentVantaEffect.destroy();
 
-  // 2. Re-initialize a brand new instance with the exact theme settings
-  if (isLight) {
-    currentVantaEffect = VANTA.NET({
-      el: "#vanta-bg",
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00,
-      color: 0x581c87,         // Dark purple forces line visibility
-      backgroundColor: 0xf0eeff, 
-      points: 10.00,           // Original density
-      maxDistance: 20.00,
-      spacing: 15.00,
-      showDots: true
-    });
-  } else {
-    currentVantaEffect = VANTA.NET({
-      el: "#vanta-bg",
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00,
-      color: 0x7c3aed,         // Original neon purple
-      backgroundColor: 0x080810,
-      points: 10.00,           // Original density
-      maxDistance: 20.00,
-      spacing: 15.00,
-      showDots: true
-    });
-  }
+  const shared = {
+    mouseControls: true, touchControls: true, gyroControls: false,
+    minHeight: 200, minWidth: 200, scale: 1, scaleMobile: 1,
+    points: 10, maxDistance: 20, spacing: 15, showDots: true,
+  };
 
-  // Store the new instance back on the element
-  if (el) el._vanta = currentVantaEffect;
+  currentVantaEffect = VANTA.NET({
+    el: '#vanta-bg',
+    ...shared,
+    color:           isLight ? 0x581c87 : 0x7c3aed,
+    backgroundColor: isLight ? 0xf0eeff  : 0x080810,
+  });
 }
 
-// ── Scroll-reveal for Journey milestones ──────────────────────────────────────
+// ── Scroll-reveal ─────────────────────────────────────────────────────────────
 function initScrollReveal() {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const entries = document.querySelectorAll('.reveal');
 
-  const observer = new IntersectionObserver(
-    (items) => {
-      items.forEach(item => {
-        if (item.isIntersecting) {
-          const dir = item.target.dataset.direction;
-          if (!prefersReduced.matches) {
-            if (dir === 'left')  item.target.classList.add('animate-fade-in-left');
-            else if (dir === 'right') item.target.classList.add('animate-fade-in-right');
-            else item.target.classList.add('animate-fade-up');
-          }
-          item.target.classList.remove('reveal');
-          item.target.style.opacity = '1';
-          observer.unobserve(item.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
+  const observer = new IntersectionObserver((items) => {
+    items.forEach(item => {
+      if (!item.isIntersecting) return;
+      const dir = item.target.dataset.direction;
+      if (!prefersReduced.matches) {
+        if (dir === 'left')       item.target.classList.add('animate-fade-in-left');
+        else if (dir === 'right') item.target.classList.add('animate-fade-in-right');
+        else                      item.target.classList.add('animate-fade-up');
+      }
+      item.target.classList.remove('reveal');
+      item.target.style.opacity = '1';
+      observer.unobserve(item.target);
+    });
+  }, { threshold: 0.15 });
 
-  entries.forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // ── Divider explosion animation ──────────────────────────────────────────
-  const dividers = document.querySelectorAll('.section-divider');
-  const dividerObserver = new IntersectionObserver(
-    (items) => {
-      items.forEach(item => {
-        if (item.isIntersecting) {
-          const divider = item.target;
-          dividerObserver.unobserve(divider);
-          if (prefersReduced.matches) {
-            divider.classList.add('exploded', 'pulsing');
-            return;
-          }
-          // Step 1: diamond appears charged
-          setTimeout(() => divider.classList.add('charged'), 100);
-          // Step 2: explosion + lines shoot out
-          setTimeout(() => {
-            divider.classList.remove('charged');
-            divider.classList.add('exploded');
-          }, 600);
-          // Step 3: pulse starts
-          setTimeout(() => divider.classList.add('pulsing'), 1200);
-        }
-      });
-    },
-    { threshold: 0.5 }
-  );
-  dividers.forEach(d => dividerObserver.observe(d));
+  // Divider explosion animation
+  const dividerObserver = new IntersectionObserver((items) => {
+    items.forEach(item => {
+      if (!item.isIntersecting) return;
+      const d = item.target;
+      dividerObserver.unobserve(d);
+      if (prefersReduced.matches) { d.classList.add('exploded', 'pulsing'); return; }
+      setTimeout(() => d.classList.add('charged'), 100);
+      setTimeout(() => { d.classList.remove('charged'); d.classList.add('exploded'); }, 600);
+      setTimeout(() => d.classList.add('pulsing'), 1200);
+    });
+  }, { threshold: 0.5 });
+
+  document.querySelectorAll('.section-divider').forEach(d => dividerObserver.observe(d));
 }
 
 // ── Contact form ──────────────────────────────────────────────────────────────
@@ -165,11 +109,9 @@ function initContactForm() {
     const message = form.querySelector('#contact-message');
     const fields  = [name, email, message];
 
-    // Clear previous errors
     form.querySelectorAll('.contact-error').forEach(el => el.classList.add('hidden'));
     fields.forEach(f => f?.classList.remove('border-red-500'));
 
-    // Validate
     let valid = true;
     fields.forEach(field => {
       if (!field) return;
@@ -178,8 +120,7 @@ function initContactForm() {
       if (isEmpty || isInvalidEmail) {
         valid = false;
         field.classList.add('border-red-500');
-        const errEl = form.querySelector(`.contact-error[data-field="${field.name}"]`);
-        errEl?.classList.remove('hidden');
+        form.querySelector(`.contact-error[data-field="${field.name}"]`)?.classList.remove('hidden');
       }
     });
 
@@ -190,9 +131,7 @@ function initContactForm() {
     submitBtn.textContent = 'Sending...';
 
     try {
-      // Replace with your Formspree endpoint: https://formspree.io/f/YOUR_ID
-      const FORMSPREE_URL = "https://formspree.io/f/mdayylzr";
-      const res = await fetch(FORMSPREE_URL, {
+      const res = await fetch('https://formspree.io/f/mdayylzr', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify({
@@ -201,7 +140,6 @@ function initContactForm() {
           message: message.value.trim(),
         }),
       });
-
       if (res.ok) {
         form.classList.add('hidden');
         success?.classList.remove('hidden');

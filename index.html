@@ -691,7 +691,35 @@
     body.light-mode #neural-tooltip #tt-tag   { color: #6d28d9 !important; }
     body.light-mode #neural-tooltip #tt-desc  { color: #4c1d95 !important; }
     body.light-mode #neural-tooltip svg       { stroke: rgba(109,40,217,0.9) !important; }
-    body.light-mode #neural-tooltip svg       { stroke: rgba(109,40,217,0.9) !important; }
+
+    /* ── Neural Map mobile — light mode ── */
+    body.light-mode #neural-mobile > div:first-child {
+      background: rgba(237,233,254,0.95) !important;
+      border-color: rgba(109,40,217,0.3) !important;
+      box-shadow: none !important;
+    }
+    body.light-mode #neural-mobile #mobile-inputs span {
+      background: linear-gradient(135deg, rgba(109,40,217,0.15), rgba(124,58,237,0.1)) !important;
+      border-color: rgba(109,40,217,0.4) !important;
+      color: #5b21b6 !important;
+      box-shadow: none !important;
+    }
+    body.light-mode #neural-mobile #mobile-project-cards a {
+      background: linear-gradient(135deg, rgba(245,243,255,0.98) 0%, rgba(237,233,254,0.98) 100%) !important;
+      border-color: rgba(109,40,217,0.3) !important;
+      box-shadow: 0 4px 12px rgba(109,40,217,0.1) !important;
+    }
+    body.light-mode #neural-mobile #mobile-project-cards h3 { color: #3b0764 !important; }
+    body.light-mode #neural-mobile #mobile-project-cards p  { color: #4c1d95 !important; }
+    body.light-mode #neural-mobile #mobile-project-cards span {
+      background: rgba(109,40,217,0.12) !important;
+      border-color: rgba(109,40,217,0.3) !important;
+      color: #5b21b6 !important;
+    }
+    body.light-mode #neural-mobile > a:last-child {
+      background: linear-gradient(135deg, rgba(109,40,217,0.2) 0%, rgba(124,58,237,0.12) 100%) !important;
+      border-color: rgba(109,40,217,0.5) !important;
+    }
   </style>
 </head>
 <body class="bg-noir-bg text-text-primary font-sans">
@@ -704,7 +732,7 @@
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-noir-bg/95 backdrop-blur border-b border-noir-border">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center h-16">
       <!-- Logo — fixed width left -->
-      <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow rounded w-40 shrink-0">
+      <a href="#home" class="font-mono text-accent-glow font-semibold text-sm tracking-widest hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow rounded">
         Omar Abdelghany
       </a>
       <!-- Desktop links — truly centered -->
@@ -718,7 +746,7 @@
         <li><a href="#contact"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="contact">Contact</a></li>
       </ul>
       <!-- Dim mode toggle + Mobile hamburger -->
-      <div class="flex items-center justify-end gap-2 w-40 shrink-0">
+      <div class="flex items-center gap-2 shrink-0 ml-auto">
         <button id="dim-toggle" aria-label="Toggle dim mode"
           class="text-text-muted hover:text-accent-glow focus:outline-none focus:ring-2 focus:ring-accent-glow rounded p-1.5 transition-colors duration-200">
           <!-- Moon icon (default) -->
@@ -1217,7 +1245,7 @@
       <!-- Vertical timeline -->
       <div class="relative">
         <!-- Connector line -->
-        <div class="absolute left-6 top-0 bottom-0 w-0.5 timeline-line hidden sm:block"></div>
+        <div class="absolute left-6 top-0 bottom-0 w-0.5 timeline-line"></div>
 
         <div class="space-y-12" id="timeline-entries">
 

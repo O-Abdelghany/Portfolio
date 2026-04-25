@@ -46,7 +46,7 @@ const PROJECT_NODES = [
 ];
 
 const OUTPUT_URL = 'https://github.com/O-Abdelghany';
-const VW = 1000, VH = 780;
+const VH = 780;
 const INPUT_X = 120, HIDDEN_X = 500, OUTPUT_X = 880;
 const NODE_R = 54, INPUT_R = 36, OUTPUT_R = 56;
 const Out_Y = VH / 2;
@@ -57,7 +57,6 @@ function inputY(i) {
   return 110 + i * spacing;
 }
 
-// Enhanced Neural Map with data packets and micro-interactions v4
 function projectPos(id) {
   const idx = PROJECT_NODES.findIndex(p => p.id === id);
   const spacing = (VH - 220) / (PROJECT_NODES.length - 1);
@@ -86,8 +85,8 @@ function getPointAtLength(path, length) {
 }
 
 export function initNeuralMap() {
-  try { initDesktop(); } catch(e) { console.error('Neural desktop failed:', e); }
-  try { initMobile(); } catch(e) { console.error('Neural mobile failed:', e); }
+  try { initDesktop(); } catch(e) { /* silent fail — page still works */ }
+  try { initMobile();  } catch(e) { /* silent fail — page still works */ }
 }
 
 function initDesktop() {
@@ -176,9 +175,9 @@ function initDesktop() {
 
     // Label below node
     const label = svgEl('text', {
-      x: INPUT_X, y: cy + INPUT_R + 14,
+      x: INPUT_X, y: cy + INPUT_R + 15,
       'text-anchor': 'middle', fill: '#94a3b8',
-      'font-size': '9', 'font-family': 'Space Grotesk,Inter,sans-serif',
+      'font-size': '14', 'font-family': 'Space Grotesk,Inter,sans-serif',
       'font-weight': '500', 'letter-spacing': '0.02em',
     });
     label.dataset.inputLabel = node.id;
@@ -253,7 +252,7 @@ function initDesktop() {
       nameTxt.appendChild(sp2);
     }
 
-    const numTxt = svgEl('text', { x: x, y: y + 64, 'text-anchor': 'middle', fill: '#6b7280', 'font-size': '8', 'font-family': 'JetBrains Mono,monospace', 'letter-spacing': '0.05em' });
+    const numTxt = svgEl('text', { x: x, y: y + 64, 'text-anchor': 'middle', fill: '#6b7280', 'font-size': '11', 'font-family': 'JetBrains Mono,monospace', 'letter-spacing': '0.05em' });
     numTxt.textContent = 'Neuron ' + proj.neuron;
 
     g.appendChild(activationRing);
@@ -721,21 +720,20 @@ function initMobile() {
   cardsEl.innerHTML = PROJECT_NODES.map(function(proj) {
     const pills = proj.skills.map(function(s) {
       const node = INPUT_NODES.find(function(n) { return n.id === s; });
-      return node ? '<span class="inline-flex items-center gap-1 font-mono text-xs px-2 py-1 rounded-full" style="background: rgba(124,58,237,0.2); border: 1px solid rgba(168,85,247,0.3); color: #c084fc;">' + node.label + '</span>' : '';
+      return node ? '<span class="inline-flex items-center font-mono text-xs px-2.5 py-1 rounded-full" style="background: rgba(124,58,237,0.2); border: 1px solid rgba(168,85,247,0.3); color: #c084fc;">' + node.label + '</span>' : '';
     }).join('');
 
-    return '<a href="' + proj.url + '" target="_blank" rel="noopener noreferrer" class="block relative overflow-hidden rounded-xl p-5 transition-all duration-300 group" style="background: linear-gradient(135deg, rgba(15,15,26,0.95) 0%, rgba(30,20,50,0.95) 100%); border: 1px solid rgba(124,58,237,0.4); box-shadow: 0 4px 16px rgba(124,58,237,0.2);">'
+    return '<a href="' + proj.url + '" target="_blank" rel="noopener noreferrer"'
+      + ' class="block relative overflow-hidden rounded-xl p-5 transition-all duration-300 group"'
+      + ' style="background: linear-gradient(135deg, rgba(15,15,26,0.95) 0%, rgba(30,20,50,0.95) 100%); border: 1px solid rgba(124,58,237,0.4); box-shadow: 0 4px 16px rgba(124,58,237,0.2);">'
       + '<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="background: radial-gradient(circle at top right, rgba(168,85,247,0.15) 0%, transparent 70%);"></div>'
       + '<div class="relative">'
-      + '<div class="flex items-start justify-between gap-2 mb-3">'
-      + '<div class="flex items-center gap-2">'
-      + '<span class="inline-flex items-center font-mono text-xs px-2.5 py-1 rounded-full" style="background: rgba(124,58,237,0.3); border: 1px solid rgba(168,85,247,0.4); color: #c084fc;">' + proj.tag + '</span>'
-      + '<span class="font-mono text-xs" style="color: rgba(148,163,184,0.7);">Neuron ' + proj.neuron + '</span>'
+      + '<div class="flex items-center justify-between gap-2 mb-2">'
+      + '<span class="font-mono text-xs px-2.5 py-1 rounded-full" style="background: rgba(124,58,237,0.3); border: 1px solid rgba(168,85,247,0.4); color: #c084fc;">' + proj.tag + '</span>'
+      + '<svg class="w-4 h-4 shrink-0 transition-transform duration-300 group-hover:translate-x-1" style="color: rgba(148,163,184,0.5);" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>'
       + '</div>'
-      + '<svg class="w-5 h-5 shrink-0 transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent-glow" style="color: rgba(148,163,184,0.5);" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>'
-      + '</div>'
-      + '<h3 class="text-base font-bold mb-2 transition-colors duration-200 group-hover:text-accent-glow" style="color: #ffffff;">' + proj.label + '</h3>'
-      + '<p class="text-sm leading-relaxed mb-4" style="color: #94a3b8;">' + proj.desc + '</p>'
+      + '<h3 class="text-base font-bold mb-2 group-hover:text-accent-glow transition-colors duration-200" style="color: #ffffff; font-family: JetBrains Mono,monospace; letter-spacing: 0.04em;">' + proj.label + '</h3>'
+      + '<p class="text-sm leading-relaxed mb-3" style="color: #94a3b8;">' + proj.desc + '</p>'
       + '<div class="flex flex-wrap gap-2">' + pills + '</div>'
       + '</div></a>';
   }).join('');

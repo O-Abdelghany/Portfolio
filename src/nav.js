@@ -3,10 +3,9 @@
  */
 
 export function initNav() {
-  const navbar = document.getElementById('navbar');
-  const navLinks = document.querySelectorAll('.nav-link');
-  const sections = document.querySelectorAll('section[id]');
-  const mobileBtn = document.getElementById('mobile-menu-btn');
+  const navLinks   = document.querySelectorAll('.nav-link');
+  const sections   = document.querySelectorAll('section[id]');
+  const mobileBtn  = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
 
   // Mobile menu toggle
