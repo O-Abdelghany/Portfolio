@@ -5,12 +5,14 @@ import { initAnimation } from './animation.js';
 import { initNav }       from './nav.js';
 import { initProjects }  from './projects.js';
 import { initChat }      from './chat.js';
+import { initNeuralMap } from './neuralmap.js?v=38';
 
 document.addEventListener('DOMContentLoaded', () => {
   // initAnimation() — replaced by Vanta NET global background
   initNav();
   initProjects();
   initChat();
+  initNeuralMap();
   initScrollReveal();
   initContactForm();
   initDimMode();

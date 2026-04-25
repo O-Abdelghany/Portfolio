@@ -40,7 +40,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 
   <style>
     html { scroll-behavior: smooth; }
@@ -456,6 +456,7 @@
       color: #1a1a2e !important;
     }
     body.light-mode .bg-noir-bg      { background-color: #f8f7ff !important; }
+    body.light-mode footer.bg-noir-bg { background-color: rgba(240,238,255,0.92) !important; }
     body.light-mode .bg-noir-surface { background-color: #ffffff !important; }
     body.light-mode .border-noir-border { border-color: #e2e0f0 !important; }
     body.light-mode #navbar {
@@ -465,6 +466,11 @@
     body.light-mode .text-text-primary { color: #1a1a2e !important; }
     body.light-mode .text-text-muted   { color: #5a5a7a !important; }
     body.light-mode .text-white        { color: #1a1a2e !important; }
+    /* Keep white text on purple/accent buttons */
+    body.light-mode .bg-accent .text-white,
+    body.light-mode .bg-accent,
+    body.light-mode a.bg-accent,
+    body.light-mode button.bg-accent { color: #ffffff !important; }
     body.light-mode h1, body.light-mode h2, body.light-mode h3 { color: #1a1a2e !important; }
     body.light-mode p  { color: #5a5a7a; }
 
@@ -619,20 +625,62 @@
     body.light-mode .bg-green-500\/10 { background-color: rgba(34,197,94,0.1) !important; }
 
     /* Footer */
-    body.light-mode footer { background-color: #f0eeff !important; border-top-color: #e2e0f0 !important; }
+    body.light-mode footer { background-color: rgba(240,238,255,0.92) !important; border-top-color: #e2e0f0 !important; }
     body.light-mode footer p, body.light-mode footer a { color: #5a5a7a !important; }
     body.light-mode footer a:hover { color: #7c3aed !important; }
 
     /* Section overlays */
     body.light-mode section[id] { background-color: rgba(240,238,255,0.88) !important; }
     body.light-mode section[id="home"] { background-color: rgba(240,238,255,0.55) !important; }
-    body.light-mode footer { background-color: rgba(235,232,255,0.95) !important; }
     body.light-mode nav#navbar { background-color: rgba(248,247,255,0.96) !important; }
 
     /* ── Light mode toggle button ────────────────────────────── */
     #dim-toggle {
       transition: all 200ms ease;
     }
+
+    /* ── Neural Map — proper light mode ── */
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes neural-pulse {
+        0%, 100% { opacity: 0.4; }
+        50%       { opacity: 1; }
+      }
+    }
+    /* Node fills — keep gradient but with light-friendly colors */
+    body.light-mode #neural-svg [data-input-id] {
+      fill: rgba(237,233,254,0.9) !important;
+      stroke: #7c3aed !important;
+      stroke-width: 2.5 !important;
+    }
+    body.light-mode #neural-svg [data-proj-circle] {
+      fill: rgba(237,233,254,0.9) !important;
+      stroke: #7c3aed !important;
+      stroke-width: 2.5 !important;
+    }
+    /* Connection lines — visible on light bg */
+    body.light-mode #neural-svg path {
+      stroke: rgba(109,40,217,0.4) !important;
+    }
+    /* Text — dark purple for contrast */
+    body.light-mode #neural-svg text { fill: #4c1d95 !important; }
+    body.light-mode #neural-svg .layer-label-main { fill: #1e1b4b !important; opacity: 1 !important; }
+    body.light-mode #neural-svg .layer-label-sub  { fill: #6d28d9 !important; opacity: 1 !important; }
+    body.light-mode #neural-svg [data-input-label] { fill: #5b21b6 !important; }
+    /* Icon paths inside nodes */
+    body.light-mode #neural-svg path[stroke-linecap] { stroke: rgba(109,40,217,0.85) !important; }
+    /* Output node spikes */
+    body.light-mode #neural-svg line { stroke: rgba(109,40,217,0.6) !important; }
+    /* Tooltip */
+    body.light-mode #neural-tooltip {
+      background: linear-gradient(135deg, rgba(245,243,255,0.99) 0%, rgba(237,233,254,0.99) 100%) !important;
+      border-color: rgba(109,40,217,0.35) !important;
+      box-shadow: 0 0 20px rgba(109,40,217,0.15), 0 20px 40px rgba(0,0,0,0.1) !important;
+    }
+    body.light-mode #neural-tooltip #tt-title { color: #1e1b4b !important; }
+    body.light-mode #neural-tooltip #tt-tag   { color: #6d28d9 !important; }
+    body.light-mode #neural-tooltip #tt-desc  { color: #4c1d95 !important; }
+    body.light-mode #neural-tooltip svg       { stroke: rgba(109,40,217,0.9) !important; }
+    body.light-mode #neural-tooltip svg       { stroke: rgba(109,40,217,0.9) !important; }
   </style>
 </head>
 <body class="bg-noir-bg text-text-primary font-sans">
@@ -654,6 +702,7 @@
         <li><a href="#skills"        class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="skills">Skills</a></li>
         <li><a href="#ai-sandbox"    class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="ai-sandbox">The AI Sandbox</a></li>
         <li><a href="#project-vault" class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="project-vault">Project Vault</a></li>
+        <li><a href="#neural-map"    class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="neural-map">Neural Map</a></li>
         <li><a href="#journey"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="journey">The Journey</a></li>
         <li><a href="#contact"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="contact">Contact</a></li>
       </ul>
@@ -680,6 +729,7 @@
         <li><a href="#skills"        class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="skills">Skills</a></li>
         <li><a href="#ai-sandbox"    class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="ai-sandbox">The AI Sandbox</a></li>
         <li><a href="#project-vault" class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="project-vault">Project Vault</a></li>
+        <li><a href="#neural-map"    class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="neural-map">Neural Map</a></li>
         <li><a href="#journey"       class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="journey">The Journey</a></li>
         <li><a href="#contact"       class="nav-link text-text-muted hover:text-white text-sm font-medium block focus:outline-none focus:ring-2 focus:ring-accent-glow rounded" data-section="contact">Contact</a></li>
       </ul>
@@ -972,6 +1022,172 @@
       </div>
       <!-- Cards grid — populated by src/projects.js -->
       <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- Section divider -->
+  <div class="section-divider"><div class="line-left"></div><div class="node"></div><div class="line-right"></div></div>
+
+  <!-- ===== NEURAL MAP ===== -->
+  <section id="neural-map" class="bg-noir-bg py-10 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-6">
+        <span class="section-label">AI Architecture</span>
+        <h2 class="text-3xl sm:text-4xl font-bold text-text-primary mt-2 mb-4">Neural Portfolio Map</h2>
+        <p class="text-text-muted max-w-xl mx-auto">A neural network visualization of my AI journey. Hover over projects to see which skills power them. Click any node to explore the code.</p>
+      </div>
+
+      <!-- Desktop: SVG neural network -->
+      <div id="neural-desktop" class="hidden md:block relative w-full" style="height:780px;">
+        <svg id="neural-svg" class="w-full h-full" viewBox="0 0 1000 780" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <!-- Gradient definitions -->
+            <radialGradient id="node-gradient-input">
+              <stop offset="0%" stop-color="rgba(124,58,237,0.3)"/>
+              <stop offset="70%" stop-color="rgba(124,58,237,0.1)"/>
+              <stop offset="100%" stop-color="rgba(15,15,26,0.95)"/>
+            </radialGradient>
+            <radialGradient id="node-gradient-project">
+              <stop offset="0%" stop-color="rgba(168,85,247,0.25)"/>
+              <stop offset="60%" stop-color="rgba(124,58,237,0.12)"/>
+              <stop offset="100%" stop-color="rgba(15,15,26,0.98)"/>
+            </radialGradient>
+            <radialGradient id="node-gradient-output">
+              <stop offset="0%" stop-color="rgba(168,85,247,0.4)"/>
+              <stop offset="50%" stop-color="rgba(109,40,217,0.3)"/>
+              <stop offset="100%" stop-color="rgba(109,40,217,0.15)"/>
+            </radialGradient>
+            
+            <!-- Glow filters -->
+            <filter id="glow-soft" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feFlood flood-color="#a855f7" flood-opacity="0.6"/>
+              <feComposite in2="blur" operator="in" result="glow"/>
+              <feMerge>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="glow-strong" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feFlood flood-color="#c084fc" flood-opacity="0.8"/>
+              <feComposite in2="blur" operator="in" result="glow"/>
+              <feMerge>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="glow-output" x="-120%" y="-120%" width="340%" height="340%">
+              <feGaussianBlur stdDeviation="10" result="blur"/>
+              <feFlood flood-color="#a855f7" flood-opacity="0.5"/>
+              <feComposite in2="blur" operator="in" result="glow"/>
+              <feMerge>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            
+            <!-- Connection gradient -->
+            <linearGradient id="conn-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="rgba(124,58,237,0.1)"/>
+              <stop offset="50%" stop-color="rgba(168,85,247,0.3)"/>
+              <stop offset="100%" stop-color="rgba(124,58,237,0.1)"/>
+            </linearGradient>
+            
+            <!-- Data packet gradient -->
+            <radialGradient id="packet-gradient">
+              <stop offset="0%" stop-color="rgba(255,255,255,1)"/>
+              <stop offset="30%" stop-color="rgba(192,132,252,1)"/>
+              <stop offset="70%" stop-color="rgba(168,85,247,0.6)"/>
+              <stop offset="100%" stop-color="rgba(168,85,247,0)"/>
+            </radialGradient>
+            <filter id="glow-packet" x="-150%" y="-150%" width="400%" height="400%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feFlood flood-color="#c084fc" flood-opacity="0.9"/>
+              <feComposite in2="blur" operator="in" result="glow"/>
+              <feMerge>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          
+          <!-- Background grid (subtle) -->
+          <g id="neural-bg" opacity="0.03">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#7c3aed" stroke-width="0.5"/>
+              </pattern>
+            </defs>
+            <rect width="1000" height="560" fill="url(#grid)"/>
+          </g>
+          
+          <!-- Connections layer -->
+          <g id="neural-connections"></g>
+          <!-- Data packets layer -->
+          <g id="neural-packets"></g>
+          <!-- Nodes layer -->
+          <g id="neural-nodes"></g>
+          <!-- Output connections on top (so they aren't hidden behind nodes) -->
+          <g id="neural-out-connections"></g>
+        </svg>
+
+        <!-- Enhanced Tooltip -->
+        <div id="neural-tooltip"
+          class="pointer-events-none absolute hidden z-20 rounded-xl p-5 shadow-2xl backdrop-blur-sm"
+          style="min-width:240px; background: linear-gradient(135deg, rgba(15,15,26,0.98) 0%, rgba(30,20,50,0.98) 100%); border: 1px solid rgba(168,85,247,0.4); box-shadow: 0 0 30px rgba(124,58,237,0.3), 0 20px 60px rgba(0,0,0,0.5);">
+          <div class="flex items-start gap-3 mb-3">
+            <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" style="background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(168,85,247,0.2)); border: 1px solid rgba(168,85,247,0.4);">
+              <svg id="tt-icon" viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="rgba(192,132,252,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p id="tt-title" class="text-sm font-bold text-white mb-0.5"></p>
+              <p id="tt-tag" class="text-xs font-mono text-accent-glow"></p>
+            </div>
+          </div>
+          <p id="tt-desc" class="text-xs text-text-muted leading-relaxed mb-3"></p>
+          <div class="flex flex-wrap gap-1.5 mb-3" id="tt-skills-container"></div>
+          <div class="flex items-center gap-2 text-xs text-accent-glow/70 font-mono">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+            <span>Click to explore repository</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile: enhanced vertical card layout -->
+      <div id="neural-mobile" class="md:hidden space-y-5">
+        <!-- Input foundations bar with enhanced styling -->
+        <div class="relative overflow-hidden rounded-xl p-5" style="background: linear-gradient(135deg, rgba(15,15,26,0.95) 0%, rgba(30,20,50,0.95) 100%); border: 1px solid rgba(168,85,247,0.3); box-shadow: 0 4px 20px rgba(124,58,237,0.2);">
+          <div class="absolute inset-0 opacity-5" style="background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(124,58,237,0.1) 10px, rgba(124,58,237,0.1) 20px);"></div>
+          <p class="relative text-xs font-semibold text-accent-glow uppercase tracking-widest font-mono mb-4 text-center flex items-center justify-center gap-2">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            Input Foundations
+          </p>
+          <div class="relative flex flex-wrap gap-2 justify-center" id="mobile-inputs"></div>
+        </div>
+        
+        <!-- Project cards with enhanced design -->
+        <div id="mobile-project-cards" class="space-y-4"></div>
+        
+        <!-- Output node with enhanced styling -->
+        <a href="https://github.com/O-Abdelghany" target="_blank" rel="noopener noreferrer"
+           class="block relative overflow-hidden rounded-xl p-6 text-center transition-all duration-300 group"
+           style="background: linear-gradient(135deg, rgba(109,40,217,0.25) 0%, rgba(124,58,237,0.15) 100%); border: 2px solid rgba(168,85,247,0.4); box-shadow: 0 4px 20px rgba(124,58,237,0.3);">
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="background: radial-gradient(circle at center, rgba(168,85,247,0.2) 0%, transparent 70%);"></div>
+          <div class="relative">
+            <div class="w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center transition-transform duration-300 group-hover:scale-110" style="background: linear-gradient(135deg, rgba(124,58,237,0.4), rgba(168,85,247,0.3)); border: 2px solid rgba(168,85,247,0.6); box-shadow: 0 0 20px rgba(168,85,247,0.4);">
+              <svg class="w-8 h-8 text-accent-glow" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+            </div>
+            <p class="text-base font-bold text-accent-glow mb-2">Output: Culmination</p>
+            <p class="text-sm text-text-muted mb-1">github.com/O-Abdelghany</p>
+            <p class="text-xs text-text-muted/70 italic">Full repository of all linked knowledge & projects</p>
+            <div class="mt-4 flex items-center justify-center gap-2 text-xs text-accent-glow/70 font-mono">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+              <span>Tap to explore</span>
+            </div>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -1273,6 +1489,7 @@
             <li><a href="#skills"        class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Skills</a></li>
             <li><a href="#ai-sandbox"    class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The AI Sandbox</a></li>
             <li><a href="#project-vault" class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Project Vault</a></li>
+            <li><a href="#neural-map"    class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Neural Map</a></li>
             <li><a href="#journey"       class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">The Journey</a></li>
             <li><a href="#contact"       class="footer-link text-sm text-text-muted hover:text-accent-glow transition-colors duration-150">Contact</a></li>
           </ul>
