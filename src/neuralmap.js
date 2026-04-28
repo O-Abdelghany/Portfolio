@@ -225,15 +225,32 @@ function initDesktop() {
       projSpikes.push({ el: spike, angle: angle });
     }
 
+    // Define resting values as constants to ensure perfect reset
+    const REST_STROKE       = 'rgba(124,58,237,0.55)';
+    const REST_STROKE_WIDTH = '2.5';
+    const REST_CONN_STROKE  = 'rgba(124,58,237,0.25)';
+    const REST_CONN_WIDTH   = '1.8';
+    const REST_OUT_STROKE   = 'rgba(124,58,237,0.25)';
+    const REST_OUT_WIDTH    = '1.8';
+
     const outerGlow = svgEl('circle', { cx: x, cy: y, r: NODE_R + 10, fill: 'rgba(168,85,247,0.2)', opacity: '0' });
     outerGlow.dataset.outerGlow = proj.id;
 
-    const circle = svgEl('circle', { cx: x, cy: y, r: NODE_R, fill: 'url(#node-gradient-project)', stroke: '#a855f7', 'stroke-width': '2.5' });
+    const circle = svgEl('circle', { cx: x, cy: y, r: NODE_R, fill: 'url(#node-gradient-project)', stroke: REST_STROKE, 'stroke-width': REST_STROKE_WIDTH });
     circle.dataset.projCircle = proj.id;
 
     g.appendChild(activationRing);
     g.appendChild(outerGlow);
     g.appendChild(circle);
+
+    const iconPathStr = PROJ_ICONS[proj.id];
+    if (iconPathStr) {
+      const iconG = svgEl('g', { transform: 'translate(' + (x - 9) + ',' + (y - 24) + ') scale(0.75)' });
+      const ip = svgEl('path', { d: iconPathStr, fill: 'none', stroke: 'rgba(192,132,252,0.85)', 'stroke-width': '1.8', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+      iconG.appendChild(ip);
+      g.appendChild(iconG);
+    }
+
     const nameTxt = svgEl('text', {
       x: x, y: y + 10, 'text-anchor': 'middle',
       fill: '#c084fc', 'font-size': '9', 'font-weight': '700',
@@ -255,16 +272,6 @@ function initDesktop() {
     const numTxt = svgEl('text', { x: x, y: y + 64, 'text-anchor': 'middle', fill: '#6b7280', 'font-size': '11', 'font-family': 'JetBrains Mono,monospace', 'letter-spacing': '0.05em' });
     numTxt.textContent = 'Neuron ' + proj.neuron;
 
-    g.appendChild(activationRing);
-    g.appendChild(outerGlow);
-    g.appendChild(circle);
-    const iconPathStr = PROJ_ICONS[proj.id];
-    if (iconPathStr) {
-      const iconG = svgEl('g', { transform: 'translate(' + (x - 9) + ',' + (y - 24) + ') scale(0.75)' });
-      const ip = svgEl('path', { d: iconPathStr, fill: 'none', stroke: 'rgba(192,132,252,0.85)', 'stroke-width': '1.8', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
-      iconG.appendChild(ip);
-      g.appendChild(iconG);
-    }
     g.appendChild(nameTxt);
     g.appendChild(numTxt);
     nodeGroup.appendChild(g);
@@ -445,13 +452,15 @@ function initDesktop() {
     spikes.forEach(function(s) { s.setAttribute('stroke', 'rgba(168,85,247,0.5)'); s.setAttribute('stroke-width', '1.5'); });
     const allOutLines = svg.querySelectorAll('[data-out-proj]');
     allOutLines.forEach(function(line) {
-      line.setAttribute('stroke', 'rgba(124,58,237,0.18)');
-      line.setAttribute('stroke-width', '1.5');
+      line.setAttribute('stroke', 'rgba(124,58,237,0.25)');
+      line.setAttribute('stroke-width', '1.8');
       line.removeAttribute('filter');
     });
     PROJECT_NODES.forEach(function(proj) {
       const c = svg.querySelector('[data-proj-circle="' + proj.id + '"]');
-      if (c) { c.setAttribute('stroke', 'rgba(124,58,237,0.6)'); c.setAttribute('stroke-width', '2.5'); }
+      const glow = svg.querySelector('[data-outer-glow="' + proj.id + '"]');
+      if (c) { c.setAttribute('stroke', 'rgba(124,58,237,0.55)'); c.setAttribute('stroke-width', '2.5'); c.removeAttribute('filter'); }
+      if (glow) glow.setAttribute('opacity', '0');
     });
     stopOutputPackets();
   });
@@ -535,7 +544,7 @@ function initDesktop() {
     proj.skills.forEach(function(skillId) {
       const line = connMap[skillId + '-' + proj.id];
       if (line) {
-        line.setAttribute('stroke', on ? 'rgba(168,85,247,0.9)' : 'rgba(124,58,237,0.45)');
+        line.setAttribute('stroke', on ? 'rgba(168,85,247,0.9)' : 'rgba(124,58,237,0.25)');
         line.setAttribute('stroke-width', on ? '3' : '1.8');
         if (on) {
           // Skip glow filter on near-horizontal lines — it clips them to invisible
@@ -562,8 +571,8 @@ function initDesktop() {
 
     const outLine = svg.querySelector('[data-out-proj="' + proj.id + '"]');
     if (outLine) {
-      outLine.setAttribute('stroke', on ? 'rgba(168,85,247,0.6)' : 'rgba(124,58,237,0.18)');
-      outLine.setAttribute('stroke-width', on ? '2.5' : '1.5');
+      outLine.setAttribute('stroke', on ? 'rgba(168,85,247,0.6)' : 'rgba(124,58,237,0.25)');
+      outLine.setAttribute('stroke-width', on ? '2.5' : '1.8');
     }
   }
 

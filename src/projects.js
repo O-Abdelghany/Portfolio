@@ -1,46 +1,90 @@
 /**
  * projects.js — Project Vault card data and renderer.
- * Swap out the `projects` array with your real data.
  */
 
-const projects = [
+const featuredProjects = [
   {
     title: 'Intelligent HR Agent',
     tag: 'RAG / AI',
-    challenge: 'Traditional keyword-based CV screening misses qualified candidates. The challenge was building a system that understands semantic meaning — ranking candidates by actual fit, not just keyword matches.',
-    solution: 'Engineered a RAG pipeline using ChromaDB and all-MiniLM-L6-v2 Sentence Transformers for semantic candidate ranking. Added a fine-tuned DistilBERT sentiment module and a PyPDF/OCR parsing engine for unstructured resumes.',
+    challenge: 'Traditional keyword-based CV screening misses qualified candidates. The challenge was building a system that understands <strong>semantic meaning</strong> — ranking candidates by actual fit, not just keyword matches.',
+    solution: 'Engineered a <strong>RAG</strong> pipeline using <strong>ChromaDB</strong> and <strong>all-MiniLM-L6-v2</strong> Sentence Transformers for semantic candidate ranking. Added a fine-tuned <strong>DistilBERT</strong> sentiment module and a <strong>PyPDF/OCR</strong> parsing engine for unstructured resumes.',
     githubUrl: 'https://github.com/O-Abdelghany/intelligent-hr-agent',
     tags: ['Python', 'ChromaDB', 'Hugging Face', 'RAG', 'DistilBERT'],
   },
   {
     title: 'AIdentify — Face Attendance',
     tag: 'Computer Vision',
-    challenge: 'Manual attendance logging is slow, error-prone, and easy to game. The challenge was building a real-time automated system accurate enough for production use.',
-    solution: 'Built a real-time computer vision attendance system using OpenCV and Deep Learning for face detection. Full-stack architecture with a FastAPI backend and React frontend for live data visualization and identity logging.',
+    challenge: 'Manual attendance logging is slow, error-prone, and easy to game. The challenge was building a <strong>real-time automated system</strong> accurate enough for production use.',
+    solution: 'Built a real-time computer vision attendance system using <strong>OpenCV</strong> and <strong>Deep Learning</strong> for face detection. Full-stack architecture with a <strong>FastAPI</strong> backend and <strong>React</strong> frontend for live data visualization and identity logging.',
     githubUrl: 'https://github.com/O-Abdelghany/AIdentify-ERP',
     tags: ['Python', 'OpenCV', 'FastAPI', 'React', 'Deep Learning'],
   },
   {
     title: 'Cardiovascular Health Predictor',
     tag: 'ML / Data Science',
-    challenge: 'Heart disease prediction models often overfit or underperform on imbalanced medical datasets. The challenge was building a reliable, production-grade pipeline with honest accuracy benchmarks.',
-    solution: 'End-to-end ML pipeline with SMOTE balancing and RobustScaler for outliers. Benchmarked 7 algorithms — Random Forest, XGBoost, SVM, KNN and more — achieving 94% accuracy with optimized KNN.',
+    challenge: 'Heart disease prediction models often overfit or underperform on <strong>imbalanced medical datasets</strong>. The challenge was building a reliable, production-grade pipeline with honest accuracy benchmarks.',
+    solution: 'End-to-end ML pipeline with <strong>SMOTE</strong> balancing and <strong>RobustScaler</strong> for outliers. Benchmarked <strong>7 algorithms</strong> — Random Forest, XGBoost, SVM, KNN and more — achieving <strong>94% accuracy</strong> with optimized KNN.',
     githubUrl: 'https://github.com/O-Abdelghany/cardiovascular-health-predictor',
     tags: ['Python', 'Scikit-learn', 'TensorFlow', 'SMOTE', 'XGBoost'],
   },
 ];
 
-export function initProjects() {
-  const grid = document.getElementById('projects-grid');
-  if (!grid) return;
+const extraProjects = [
+  {
+    title: 'Uber Data Analytics',
+    tag: 'Data Science',
+    challenge: 'Ride-hailing cancellations were costing revenue but the <strong>root causes were buried</strong> in raw trip data with no clear visualization.',
+    solution: 'Conducted full <strong>EDA</strong> and statistical analysis on ride data to identify cancellation patterns. Visualized insights via an interactive <strong>Power BI</strong> dashboard with actionable recommendations.',
+    githubUrl: 'https://github.com/O-Abdelghany/uber-data-analytics',
+    tags: ['Python', 'Pandas', 'Power BI', 'EDA', 'Statistics'],
+  },
+  {
+    title: 'Shortest Path Finder',
+    tag: 'Algorithms / C++',
+    challenge: 'Comparing the real-world performance of <strong>Bellman-Ford</strong> vs <strong>Dijkstra</strong> across different graph structures and edge weight distributions.',
+    solution: 'C++ implementation benchmarking <strong>Bellman-Ford</strong> (Dynamic Programming + Edge Relaxation) against <strong>Dijkstra\'s algorithm</strong>, with detailed complexity analysis and test cases.',
+    githubUrl: 'https://github.com/O-Abdelghany/HR-RAG-System',
+    tags: ['C++', 'Bellman-Ford', 'Dijkstra', 'Dynamic Programming', 'Graph Theory'],
+  },
+  {
+    title: 'Cycle Detection',
+    tag: 'Algorithms / C++',
+    challenge: 'Detecting cycles in large graphs efficiently — a critical problem in <strong>dependency resolution</strong> and <strong>deadlock detection</strong>.',
+    solution: 'Implemented <strong>Disjoint Set Union (Union-Find)</strong> with path compression and union by rank, combined with adjacency matrices for optimized graph cycle detection.',
+    githubUrl: 'https://github.com/O-Abdelghany/HR-RAG-System',
+    tags: ['C++', 'Union-Find', 'Graph Theory', 'Data Structures'],
+  },
+  {
+    title: 'Gym Management Web App',
+    tag: 'Full-Stack',
+    challenge: 'Gym staff needed a <strong>centralized system</strong> to manage memberships, track attendance, and handle payments without spreadsheets.',
+    solution: 'Full-stack web application built with <strong>Node.js</strong>, <strong>Express</strong>, and <strong>MongoDB</strong> — featuring member registration, subscription tracking, and an admin dashboard.',
+    githubUrl: 'https://github.com/O-Abdelghany/HR-RAG-System',
+    tags: ['Node.js', 'Express', 'MongoDB', 'JavaScript', 'REST API'],
+  },
+  {
+    title: 'Hotel Management System',
+    tag: 'Java / OOP',
+    challenge: 'Designing a <strong>scalable desktop application</strong> that models real-world hotel operations using proper object-oriented principles.',
+    solution: 'Java desktop application built with <strong>JavaFX</strong> for the UI, applying <strong>OOP</strong> design patterns — inheritance, polymorphism, encapsulation — across room booking, guest management, and billing modules.',
+    githubUrl: 'https://github.com/O-Abdelghany/HR-RAG-System',
+    tags: ['Java', 'JavaFX', 'OOP', 'Design Patterns'],
+  },
+  {
+    title: 'University Network Design',
+    tag: 'Networking',
+    challenge: 'Designing a <strong>scalable, secure network infrastructure</strong> for a multi-building university campus with isolated departments.',
+    solution: 'Designed and simulated full network infrastructure using <strong>Cisco Packet Tracer</strong>, implementing <strong>VLANs</strong>, inter-VLAN routing, DHCP, and access control lists for department isolation.',
+    githubUrl: 'https://github.com/O-Abdelghany/HR-RAG-System',
+    tags: ['Cisco Packet Tracer', 'VLANs', 'Routing', 'Network Design'],
+  },
+];
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-  // Render cards
-  grid.innerHTML = projects.map((p, i) => `
+function renderCard(p, i, delay = 0) {
+  return `
     <article
       class="project-card bg-noir-surface border border-noir-border rounded-xl p-6 flex flex-col gap-4 reveal"
-      style="animation-delay: ${i * 150}ms"
+      style="animation-delay: ${delay}ms"
       data-direction="up"
     >
       <div class="flex items-start justify-between gap-2">
@@ -69,17 +113,57 @@ export function initProjects() {
         View Code
       </a>
     </article>
-  `).join('');
+  `;
+}
 
-  // Scroll-reveal with IntersectionObserver
-  const cards = grid.querySelectorAll('.project-card');
+export function initProjects() {
+  const grid = document.getElementById('projects-grid');
+  const expandBtn = document.getElementById('projects-expand-btn');
+  if (!grid) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let expanded = false;
+
+  // Render featured cards
+  grid.innerHTML = featuredProjects.map((p, i) => renderCard(p, i, i * 150)).join('');
+  observeCards(grid.querySelectorAll('.project-card'), prefersReduced);
+
+  if (!expandBtn) return;
+
+  expandBtn.addEventListener('click', () => {
+    expanded = !expanded;
+
+    if (expanded) {
+      // Append extra cards
+      const extraHTML = extraProjects.map((p, i) => renderCard(p, i, i * 100)).join('');
+      const wrapper = document.createElement('div');
+      wrapper.id = 'extra-projects';
+      wrapper.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6';
+      wrapper.innerHTML = extraHTML;
+      grid.parentElement.insertBefore(wrapper, expandBtn.parentElement);
+      observeCards(wrapper.querySelectorAll('.project-card'), prefersReduced);
+
+      expandBtn.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+        Show Less
+      `;
+    } else {
+      const extra = document.getElementById('extra-projects');
+      if (extra) extra.remove();
+      expandBtn.innerHTML = `
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        Explore More Projects
+      `;
+    }
+  });
+}
+
+function observeCards(cards, prefersReduced) {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          if (!prefersReduced.matches) {
-            entry.target.classList.add('animate-fade-up');
-          }
+          if (!prefersReduced.matches) entry.target.classList.add('animate-fade-up');
           entry.target.classList.remove('reveal');
           entry.target.style.opacity = '1';
           observer.unobserve(entry.target);
@@ -88,6 +172,5 @@ export function initProjects() {
     },
     { threshold: 0.1 }
   );
-
   cards.forEach(card => observer.observe(card));
 }

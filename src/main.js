@@ -23,16 +23,24 @@ function initScrollReveal() {
     items.forEach(item => {
       if (!item.isIntersecting) return;
       const dir = item.target.dataset.direction;
+      const isMilestone = item.target.closest('#timeline-entries') !== null;
+
       if (!prefersReduced.matches) {
-        if (dir === 'left')       item.target.classList.add('animate-fade-in-left');
-        else if (dir === 'right') item.target.classList.add('animate-fade-in-right');
-        else                      item.target.classList.add('animate-fade-up');
+        if (isMilestone) {
+          // Enhanced milestone animation with border flash
+          item.target.classList.add(dir === 'right' ? 'milestone-animate-right' : 'milestone-animate-left');
+          item.target.classList.add('milestone-flash');
+        } else {
+          if (dir === 'left')       item.target.classList.add('animate-fade-in-left');
+          else if (dir === 'right') item.target.classList.add('animate-fade-in-right');
+          else                      item.target.classList.add('animate-fade-up');
+        }
       }
       item.target.classList.remove('reveal');
       item.target.style.opacity = '1';
       observer.unobserve(item.target);
     });
-  }, { threshold: 0.15 });
+  }, { threshold: 0.2 });
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
