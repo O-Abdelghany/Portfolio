@@ -2,7 +2,7 @@
  * chat.js — AI Sandbox terminal chat logic with smooth real-time markdown typewriter.
  */
 
-const API_URL = window.ENV?.API_URL || 'http://localhost:3000/api/chat';
+const API_URL = window.ENV?.API_URL || 'https://omar-portfolio-api.onrender.com/api/chat';
 
 export function initChat() {
   const log     = document.getElementById('chat-log');
