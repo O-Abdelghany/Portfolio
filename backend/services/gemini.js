@@ -18,8 +18,8 @@ function getClient() {
 }
 
 /**
- * Send a message to Gemini 1.5 Flash with Omar's knowledge context as system prompt.
- * @param {string} message - The recruiter's message
+ * Send a message to Gemini with Omar's knowledge context as system prompt.
+ * @param {string} message - The user's message
  * @param {string} [repoSummary=''] - Optional GitHub repo context
  * @returns {Promise<string>} The model's text response
  */

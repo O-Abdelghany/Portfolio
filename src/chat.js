@@ -14,28 +14,52 @@ export function initChat() {
 
   if (!log || !input || !sendBtn) return;
 
-  // ── Continuous health polling every 10s ──────────────────────────────────
+  // ── Backend status with smart cold-start handling ────────────────────────
+  let isFirstCheck = true;
+  let startupTimer = null;
+  const STARTUP_TIMEOUT = 45000; // 45s before showing "unavailable"
+
   function setStatus(state) {
     if (!statusDot || !statusText) return;
     const states = {
-      online:  { dot: 'bg-green-500',  label: 'online',      cls: 'text-text-muted' },
-      quota:   { dot: 'bg-yellow-400', label: 'quota limit', cls: 'text-yellow-400' },
-      offline: { dot: 'bg-red-500',    label: 'offline',     cls: 'text-red-400' },
+      online:      { dot: 'bg-green-500',  label: 'online',                cls: 'text-text-muted' },
+      starting:    { dot: 'bg-yellow-400', label: 'starting up...',        cls: 'text-yellow-400' },
+      quota:       { dot: 'bg-orange-400', label: 'quota reached · resets tomorrow', cls: 'text-orange-400' },
+      unavailable: { dot: 'bg-red-500',    label: 'unavailable',           cls: 'text-red-400' },
     };
-    const s = states[state] || states.offline;
-    statusDot.className = 'w-2 h-2 rounded-full ' + s.dot;
+    const s = states[state] || states.unavailable;
+    statusDot.className = 'w-2 h-2 rounded-full ' + s.dot + (state === 'starting' ? ' animate-pulse' : '');
     statusText.textContent = s.label;
     statusText.className = 'text-xs ' + s.cls;
   }
 
   function checkHealth() {
-    fetch(API_URL.replace('/api/chat', '/health/full'))
-      .then(async r => {
-        const data = await r.json().catch(() => ({}));
-        setStatus(data.status || (r.ok ? 'online' : 'offline'));
+    fetch(API_URL.replace('/api/chat', '/health'))
+      .then(r => {
+        if (r.ok) {
+          // Backend responded — clear startup timer, show online
+          if (startupTimer) { clearTimeout(startupTimer); startupTimer = null; }
+          setStatus('online');
+          isFirstCheck = false;
+        } else {
+          if (isFirstCheck) setStatus('starting');
+          else setStatus('unavailable');
+        }
       })
-      .catch(() => setStatus('offline'));
+      .catch(() => {
+        if (isFirstCheck) setStatus('starting');
+        else setStatus('unavailable');
+      });
   }
+
+  // Always start with "starting up..." on first load
+  setStatus('starting');
+
+  // After 45s with no response, give up and show unavailable
+  startupTimer = setTimeout(() => {
+    setStatus('unavailable');
+    isFirstCheck = false;
+  }, STARTUP_TIMEOUT);
 
   checkHealth();
   setInterval(checkHealth, 10000);
@@ -74,7 +98,7 @@ export function initChat() {
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         if (res.status === 429) setStatus('quota');
-        else setStatus('offline');
+        else setStatus('unavailable');
         appendAgentBubble(err.error || 'Something went wrong. Please try again.', true);
       } else {
         const data = await res.json();
@@ -83,7 +107,7 @@ export function initChat() {
       }
     } catch {
       removeElement(indicator);
-      setStatus('offline');
+      setStatus('unavailable');
       appendAgentBubble('Connection error — backend may not be running. [Contact Omar directly](#contact)', true);
     } finally {
       sendBtn.disabled = false;

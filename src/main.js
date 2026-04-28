@@ -13,50 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNeuralMap();
   initScrollReveal();
   initContactForm();
-  initDimMode();
 });
-
-// ── Dim mode toggle ───────────────────────────────────────────────────────────
-function initDimMode() {
-  const btn  = document.getElementById('dim-toggle');
-  const moon = document.getElementById('dim-icon-moon');
-  const sun  = document.getElementById('dim-icon-sun');
-  if (!btn) return;
-
-  if (localStorage.getItem('lightMode') === 'on') {
-    document.body.classList.add('light-mode');
-    moon.classList.add('hidden');
-    sun.classList.remove('hidden');
-    updateVantaColors(true);
-  }
-
-  btn.addEventListener('click', () => {
-    const isLight = document.body.classList.toggle('light-mode');
-    moon.classList.toggle('hidden', isLight);
-    sun.classList.toggle('hidden', !isLight);
-    localStorage.setItem('lightMode', isLight ? 'on' : 'off');
-    updateVantaColors(isLight);
-  });
-}
-
-let currentVantaEffect = null;
-
-function updateVantaColors(isLight) {
-  if (currentVantaEffect) currentVantaEffect.destroy();
-
-  const shared = {
-    mouseControls: true, touchControls: true, gyroControls: false,
-    minHeight: 200, minWidth: 200, scale: 1, scaleMobile: 1,
-    points: 10, maxDistance: 20, spacing: 15, showDots: true,
-  };
-
-  currentVantaEffect = VANTA.NET({
-    el: '#vanta-bg',
-    ...shared,
-    color:           isLight ? 0x581c87 : 0x7c3aed,
-    backgroundColor: isLight ? 0xf0eeff  : 0x080810,
-  });
-}
 
 // ── Scroll-reveal ─────────────────────────────────────────────────────────────
 function initScrollReveal() {

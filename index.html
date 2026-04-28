@@ -450,276 +450,6 @@
       background: rgba(168,85,247,0.15);
     }
 
-    /* ── Light mode ─────────────────────────────────────────── */
-    body.light-mode {
-      background-color: #adaabd !important;
-      color: #1a1a2e !important;
-    }
-    body.light-mode .bg-noir-bg      { background-color: #f8f7ff !important; }
-    body.light-mode footer.bg-noir-bg { background-color: rgba(240,238,255,0.92) !important; }
-    body.light-mode .bg-noir-surface { background-color: #ffffff !important; }
-    body.light-mode .border-noir-border { border-color: #e2e0f0 !important; }
-    body.light-mode #navbar {
-      background-color: rgba(248,247,255,0.95) !important;
-      border-bottom-color: #e2e0f0 !important;
-    }
-    body.light-mode .text-text-primary { color: #1a1a2e !important; }
-    body.light-mode .text-text-muted   { color: #5a5a7a !important; }
-    body.light-mode .text-white        { color: #1a1a2e !important; }
-    /* Keep white text on purple/accent buttons */
-    body.light-mode .bg-accent .text-white,
-    body.light-mode .bg-accent,
-    body.light-mode a.bg-accent,
-    body.light-mode button.bg-accent { color: #ffffff !important; }
-    body.light-mode h1, body.light-mode h2, body.light-mode h3 { color: #1a1a2e !important; }
-    body.light-mode p  { color: #5a5a7a; }
-
-    /* Nav */
-    body.light-mode .nav-link { color: #5a5a7a !important; }
-    body.light-mode .nav-link.active { color: #7c3aed !important; }
-    body.light-mode .nav-link:hover  { color: #1a1a2e !important; }
-
-    /* Hero buttons */
-    body.light-mode .btn-primary { color: #ffffff !important; }
-    body.light-mode .btn-ghost {
-      border-color: #7c3aed !important;
-      color: #7c3aed !important;
-    }
-    body.light-mode .btn-ghost:hover {
-      background-color: rgba(124,58,237,0.1) !important;
-      color: #5b21b6 !important;
-      border-color: #a855f7 !important;
-    }
-    body.light-mode .btn-cv {
-      border-color: #7c3aed !important;
-      color: #7c3aed !important;
-    }
-    body.light-mode .btn-cv:hover {
-      border-color: #a855f7 !important;
-      color: #a855f7 !important;
-      box-shadow: 0 0 12px rgba(168,85,247,0.35), 0 4px 14px rgba(124,58,237,0.2) !important;
-    }
-
-    /* Cards (skill cards, timeline, project) */
-    body.light-mode .bg-noir-surface,
-    body.light-mode .project-card,
-    body.light-mode .timeline-card {
-      background-color: #ffffff !important;
-      border-color: #e2e0f0 !important;
-      box-shadow: 0 1px 8px rgba(124,58,237,0.06);
-    }
-    body.light-mode .project-card:hover {
-      box-shadow: 0 0 0 1px rgba(124,58,237,0.4), 0 8px 32px rgba(124,58,237,0.15) !important;
-    }
-    /* Skill card container hover border */
-    body.light-mode .bg-noir-surface:hover {
-      border-color: rgba(124,58,237,0.4) !important;
-    }
-
-    /* Project card tech tags */
-    body.light-mode .project-card span.font-mono {
-      border-color: #d4d0f0 !important;
-      color: #5a5a7a !important;
-    }
-    /* Project card "View Code" button */
-    body.light-mode .project-card a {
-      border-color: #7c3aed !important;
-      color: #7c3aed !important;
-    }
-    body.light-mode .project-card a:hover {
-      background-color: #7c3aed !important;
-      color: #ffffff !important;
-    }
-
-    /* Skill badges */
-    body.light-mode .skill-badge {
-      background: rgba(124,58,237,0.06) !important;
-      border-color: #d4d0f0 !important;
-      color: #5a5a7a !important;
-    }
-    body.light-mode .skill-badge:hover {
-      background: rgba(124,58,237,0.12) !important;
-      border-color: #a855f7 !important;
-      color: #1a1a2e !important;
-    }
-    body.light-mode .skill-badge-glow {
-      background: rgba(124,58,237,0.1) !important;
-      border-color: #b8b0e8 !important;
-      color: #7c3aed !important;
-    }
-    body.light-mode .skill-badge-glow:hover {
-      background: rgba(124,58,237,0.18) !important;
-      border-color: #7c3aed !important;
-      color: #5b21b6 !important;
-    }
-
-    /* Terminal — stays dark */
-    body.light-mode .terminal-scanlines {
-      background: linear-gradient(135deg, #0d0d1a 0%, #1a0a2e 50%, #0a1628 100%) !important;
-      border: 1px solid rgba(124,58,237,0.5) !important;
-      box-shadow: 0 0 0 1px rgba(168,85,247,0.2), 0 20px 60px rgba(124,58,237,0.25), 0 0 40px rgba(124,58,237,0.1) !important;
-    }
-    body.light-mode #chat-log {
-      background: linear-gradient(180deg, #0d0d1a 0%, #0a0a18 100%) !important;
-    }
-
-    /* Suggested prompts */
-    body.light-mode .suggested-prompt {
-      background: rgba(124,58,237,0.08) !important;
-      border-color: rgba(124,58,237,0.3) !important;
-      color: #5a3a8a !important;
-    }
-    body.light-mode .suggested-prompt:hover {
-      background: rgba(124,58,237,0.15) !important;
-      border-color: #7c3aed !important;
-      color: #7c3aed !important;
-    }
-
-    /* Contact cards */
-    body.light-mode a.flex.items-center.gap-3.bg-noir-surface {
-      background-color: #ffffff !important;
-      border-color: #e2e0f0 !important;
-    }
-    body.light-mode a.flex.items-center.gap-3.bg-noir-surface:hover {
-      background-color: #f5f3ff !important;
-      border-color: unset !important;
-    }
-    /* Restore specific hover border colors in light mode */
-    body.light-mode a.flex.items-center.gap-3.hover\:border-green-500:hover {
-      border-color: rgb(34,197,94) !important;
-    }
-    body.light-mode a.flex.items-center.gap-3.hover\:border-blue-500:hover {
-      border-color: rgb(59,130,246) !important;
-    }
-    body.light-mode a.flex.items-center.gap-3.hover\:border-accent:hover {
-      border-color: #7c3aed !important;
-    }
-
-    /* Contact form */
-    body.light-mode #contact-form input,
-    body.light-mode #contact-form textarea {
-      background-color: #f8f7ff !important;
-      border-color: #e2e0f0 !important;
-      color: #1a1a2e !important;
-    }
-    body.light-mode #contact-form input:focus,
-    body.light-mode #contact-form textarea:focus {
-      border-color: #7c3aed !important;
-      box-shadow: 0 0 0 2px rgba(124,58,237,0.15) !important;
-    }
-    body.light-mode #contact-form input::placeholder,
-    body.light-mode #contact-form textarea::placeholder { color: #a0a0b8 !important; }
-    body.light-mode #contact-form label { color: #5a5a7a !important; }
-
-    /* Contact section CV row view button */
-    body.light-mode a.border.border-noir-border.hover\:border-accent {
-      border-color: #e2e0f0 !important;
-      color: #5a5a7a !important;
-    }
-    body.light-mode a.border.border-noir-border.hover\:border-accent:hover {
-      border-color: #7c3aed !important;
-      color: #7c3aed !important;
-    }
-
-    /* Section divider */
-    body.light-mode .section-divider { background: transparent !important; }
-    body.light-mode .section-divider .line-left,
-    body.light-mode .section-divider .line-right { background: rgba(124,58,237,0.3) !important; }
-    body.light-mode .section-divider .node { background: #7c3aed !important; }
-
-    /* Timeline */
-    body.light-mode .timeline-line {
-      background: linear-gradient(to bottom, #7c3aed, #e2e0f0) !important;
-    }
-
-    /* Availability badge */
-    body.light-mode .bg-green-500\/10 { background-color: rgba(34,197,94,0.1) !important; }
-
-    /* Footer */
-    body.light-mode footer { background-color: rgba(240,238,255,0.92) !important; border-top-color: #e2e0f0 !important; }
-    body.light-mode footer p, body.light-mode footer a { color: #5a5a7a !important; }
-    body.light-mode footer a:hover { color: #7c3aed !important; }
-
-    /* Section overlays */
-    body.light-mode section[id] { background-color: rgba(240,238,255,0.88) !important; }
-    body.light-mode section[id="home"] { background-color: rgba(240,238,255,0.55) !important; }
-    body.light-mode nav#navbar { background-color: rgba(248,247,255,0.96) !important; }
-
-    /* ── Light mode toggle button ────────────────────────────── */
-    #dim-toggle {
-      transition: all 200ms ease;
-    }
-
-    /* ── Neural Map — proper light mode ── */
-    @media (prefers-reduced-motion: no-preference) {
-      @keyframes neural-pulse {
-        0%, 100% { opacity: 0.4; }
-        50%       { opacity: 1; }
-      }
-    }
-    /* Node fills — keep gradient but with light-friendly colors */
-    body.light-mode #neural-svg [data-input-id] {
-      fill: rgba(237,233,254,0.9) !important;
-      stroke: #7c3aed !important;
-      stroke-width: 2.5 !important;
-    }
-    body.light-mode #neural-svg [data-proj-circle] {
-      fill: rgba(237,233,254,0.9) !important;
-      stroke: #7c3aed !important;
-      stroke-width: 2.5 !important;
-    }
-    /* Connection lines — visible on light bg */
-    body.light-mode #neural-svg path {
-      stroke: rgba(109,40,217,0.4) !important;
-    }
-    /* Text — dark purple for contrast */
-    body.light-mode #neural-svg text { fill: #4c1d95 !important; }
-    body.light-mode #neural-svg .layer-label-main { fill: #1e1b4b !important; opacity: 1 !important; }
-    body.light-mode #neural-svg .layer-label-sub  { fill: #6d28d9 !important; opacity: 1 !important; }
-    body.light-mode #neural-svg [data-input-label] { fill: #5b21b6 !important; }
-    /* Icon paths inside nodes */
-    body.light-mode #neural-svg path[stroke-linecap] { stroke: rgba(109,40,217,0.85) !important; }
-    /* Output node spikes */
-    body.light-mode #neural-svg line { stroke: rgba(109,40,217,0.6) !important; }
-    /* Tooltip */
-    body.light-mode #neural-tooltip {
-      background: linear-gradient(135deg, rgba(245,243,255,0.99) 0%, rgba(237,233,254,0.99) 100%) !important;
-      border-color: rgba(109,40,217,0.35) !important;
-      box-shadow: 0 0 20px rgba(109,40,217,0.15), 0 20px 40px rgba(0,0,0,0.1) !important;
-    }
-    body.light-mode #neural-tooltip #tt-title { color: #1e1b4b !important; }
-    body.light-mode #neural-tooltip #tt-tag   { color: #6d28d9 !important; }
-    body.light-mode #neural-tooltip #tt-desc  { color: #4c1d95 !important; }
-    body.light-mode #neural-tooltip svg       { stroke: rgba(109,40,217,0.9) !important; }
-
-    /* ── Neural Map mobile — light mode ── */
-    body.light-mode #neural-mobile > div:first-child {
-      background: rgba(237,233,254,0.95) !important;
-      border-color: rgba(109,40,217,0.3) !important;
-      box-shadow: none !important;
-    }
-    body.light-mode #neural-mobile #mobile-inputs span {
-      background: linear-gradient(135deg, rgba(109,40,217,0.15), rgba(124,58,237,0.1)) !important;
-      border-color: rgba(109,40,217,0.4) !important;
-      color: #5b21b6 !important;
-      box-shadow: none !important;
-    }
-    body.light-mode #neural-mobile #mobile-project-cards a {
-      background: linear-gradient(135deg, rgba(245,243,255,0.98) 0%, rgba(237,233,254,0.98) 100%) !important;
-      border-color: rgba(109,40,217,0.3) !important;
-      box-shadow: 0 4px 12px rgba(109,40,217,0.1) !important;
-    }
-    body.light-mode #neural-mobile #mobile-project-cards h3 { color: #3b0764 !important; }
-    body.light-mode #neural-mobile #mobile-project-cards p  { color: #4c1d95 !important; }
-    body.light-mode #neural-mobile #mobile-project-cards span {
-      background: rgba(109,40,217,0.12) !important;
-      border-color: rgba(109,40,217,0.3) !important;
-      color: #5b21b6 !important;
-    }
-    body.light-mode #neural-mobile > a:last-child {
-      background: linear-gradient(135deg, rgba(109,40,217,0.2) 0%, rgba(124,58,237,0.12) 100%) !important;
-      border-color: rgba(109,40,217,0.5) !important;
-    }
   </style>
 </head>
 <body class="bg-noir-bg text-text-primary font-sans">
@@ -745,15 +475,8 @@
         <li><a href="#journey"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="journey">The Journey</a></li>
         <li><a href="#contact"       class="nav-link text-text-muted hover:text-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent-glow rounded px-1" data-section="contact">Contact</a></li>
       </ul>
-      <!-- Dim mode toggle + Mobile hamburger -->
+      <!-- Mobile hamburger -->
       <div class="flex items-center gap-2 shrink-0 ml-auto">
-        <button id="dim-toggle" aria-label="Toggle dim mode"
-          class="text-text-muted hover:text-accent-glow focus:outline-none focus:ring-2 focus:ring-accent-glow rounded p-1.5 transition-colors duration-200">
-          <!-- Moon icon (default) -->
-          <svg id="dim-icon-moon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-          <!-- Sun icon (dim mode) -->
-          <svg id="dim-icon-sun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-        </button>
         <button id="mobile-menu-btn" class="md:hidden text-text-muted hover:text-white focus:outline-none focus:ring-2 focus:ring-accent-glow rounded p-1" aria-label="Toggle navigation menu" aria-expanded="false">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -992,7 +715,7 @@
       </div>
 
       <!-- Terminal window -->
-      <div class="terminal-scanlines bg-noir-surface border border-noir-border rounded-xl overflow-hidden shadow-2xl shadow-accent/10 font-mono">
+      <div class="terminal-scanlines border border-noir-border rounded-xl overflow-hidden shadow-2xl shadow-accent/10 font-mono" style="background: linear-gradient(135deg, #0d0d1a 0%, #1a0a2e 50%, #0a1628 100%); border-color: rgba(124,58,237,0.4); box-shadow: 0 0 0 1px rgba(168,85,247,0.15), 0 20px 60px rgba(124,58,237,0.2);">
         <!-- Terminal header bar -->
         <div class="flex items-center gap-2 px-4 py-3 bg-noir-bg border-b border-noir-border">
           <span class="w-3 h-3 rounded-full bg-red-500"></span>
@@ -1006,7 +729,7 @@
         </div>
 
         <!-- Message log -->
-        <div id="chat-log" class="h-96 overflow-y-auto p-4 space-y-4 text-sm">
+        <div id="chat-log" class="h-96 overflow-y-auto p-4 space-y-4 text-sm" style="background: linear-gradient(180deg, #0d0d1a 0%, #0a0a18 100%)">
           <!-- Welcome message -->
           <div class="flex gap-3">
             <span class="text-accent-glow shrink-0 select-none">agent$</span>
@@ -1029,6 +752,7 @@
           />
           <button
             id="chat-send"
+            type="button"
             aria-label="Send message"
             class="flex items-center gap-1.5 bg-accent hover:bg-accent-glow text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow shrink-0"
           >
@@ -1040,10 +764,10 @@
 
       <!-- Suggested prompts -->
       <div class="mt-4 flex flex-wrap gap-2 justify-center">
-        <button class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">Does Omar know Python?</button>
-        <button class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">What AI projects has he built?</button>
-        <button class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">Tell me about his ECPC result</button>
-        <button class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">Is he available for UAE roles?</button>
+        <button type="button" class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">Does Omar know Python?</button>
+        <button type="button" class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">What AI projects has he built?</button>
+        <button type="button" class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">Tell me about his ECPC result</button>
+        <button type="button" class="suggested-prompt font-mono text-xs text-text-muted border border-noir-border hover:border-accent hover:text-accent px-3 py-1.5 rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent-glow">Is he available for UAE roles?</button>
       </div>
     </div>
   </section>
@@ -1620,24 +1344,16 @@
         cvMenu.style.cssText = 'display:none;position:fixed;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,0.4);z-index:99999;min-width:160px;overflow:hidden;border:1px solid;';
         document.body.appendChild(cvMenu);
 
-        function applyTheme() {
-          const light = document.body.classList.contains('light-mode');
-          const bg     = light ? '#ffffff' : '#0f0f1a';
-          const border = light ? '#e2e0f0' : '#1e1e3a';
-          const text   = light ? '#5a5a7a' : '#94a3b8';
-          const hover  = light ? '#1a1a2e' : '#ffffff';
-          cvMenu.style.background   = bg;
-          cvMenu.style.borderColor  = border;
-          cvMenu.querySelectorAll('a').forEach((a, i) => {
-            a.style.color = text;
-            if (i > 0) a.style.borderTop = '1px solid ' + border;
-            a.onmouseover = () => { a.style.background = 'rgba(124,58,237,0.1)'; a.style.color = hover; };
-            a.onmouseout  = () => { a.style.background = ''; a.style.color = text; };
-          });
-        }
-
         function openDropdown() {
-          applyTheme();
+          // Dark mode only styling
+          cvMenu.style.background  = '#0f0f1a';
+          cvMenu.style.borderColor = '#1e1e3a';
+          cvMenu.querySelectorAll('a').forEach((a, i) => {
+            a.style.color = '#94a3b8';
+            if (i > 0) a.style.borderTop = '1px solid #1e1e3a';
+            a.onmouseover = () => { a.style.background = 'rgba(124,58,237,0.1)'; a.style.color = '#ffffff'; };
+            a.onmouseout  = () => { a.style.background = ''; a.style.color = '#94a3b8'; };
+          });
           const r = cvBtn.getBoundingClientRect();
           cvMenu.style.top   = (r.bottom + 6) + 'px';
           cvMenu.style.left  = r.left + 'px';
@@ -1661,35 +1377,13 @@
       }
 
       if (window.VANTA && window.VANTA.NET && !prefersReduced) {
-        const vantaEffect = VANTA.NET({
+        VANTA.NET({
           el: '#vanta-bg',
-          mouseControls: true,
-          touchControls: true,
-          gyroControls: false,
-          minHeight: 200,
-          minWidth: 200,
-          scale: 1.0,
-          scaleMobile: 1.0,
-          color: 0x7c3aed,
-          backgroundColor: 0x080810,
-          points: 9,
-          maxDistance: 22,
-          spacing: 18,
-          showDots: true,
+          mouseControls: true, touchControls: true, gyroControls: false,
+          minHeight: 200, minWidth: 200, scale: 1.0, scaleMobile: 1.0,
+          color: 0x7c3aed, backgroundColor: 0x080810,
+          points: 9, maxDistance: 22, spacing: 18, showDots: true,
         });
-        // Store instance on element for light mode toggling
-        document.getElementById('vanta-bg')._vanta = vantaEffect;
-
-        // Scroll-driven parallax: subtle scale on scroll for depth effect
-        let ticking = false;
-        window.addEventListener('scroll', () => {
-          if (!ticking) {
-            requestAnimationFrame(() => {
-              ticking = false;
-            });
-            ticking = true;
-          }
-        }, { passive: true });
       }
     });
   </script>
