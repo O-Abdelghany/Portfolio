@@ -80,7 +80,7 @@ const extraProjects = [
   },
 ];
 
-function renderCard(p, i, delay = 0) {
+function renderCard(p, delay = 0) {
   return `
     <article
       class="project-card bg-noir-surface border border-noir-border rounded-xl p-6 flex flex-col gap-4 reveal"
@@ -125,7 +125,7 @@ export function initProjects() {
   let expanded = false;
 
   // Render featured cards
-  grid.innerHTML = featuredProjects.map((p, i) => renderCard(p, i, i * 150)).join('');
+  grid.innerHTML = featuredProjects.map((p, i) => renderCard(p, i * 150)).join('');
   observeCards(grid.querySelectorAll('.project-card'), prefersReduced);
 
   if (!expandBtn) return;
@@ -135,7 +135,7 @@ export function initProjects() {
 
     if (expanded) {
       // Append extra cards
-      const extraHTML = extraProjects.map((p, i) => renderCard(p, i, i * 100)).join('');
+      const extraHTML = extraProjects.map((p, i) => renderCard(p, i * 100)).join('');
       const wrapper = document.createElement('div');
       wrapper.id = 'extra-projects';
       wrapper.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6';
