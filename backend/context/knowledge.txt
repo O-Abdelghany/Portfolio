@@ -87,7 +87,10 @@ SKILLS:
 
 
 EXPERIENCE:
-* **AI Scholar - Samsung Innovation Campus**: Completed an intensive **4-month** program **(230+ training hours)**. Successfully finished **32** practical assignments and **3** major capstone projects integrating **AI Scholarship** **AI** with **Power BI** dashboards. Developed **14+ ML** models and architected **Deep Learning** solutions with **TensorFlow**.
+* **AI Scholar - Samsung Innovation Campus**: Completed an intensive **4-month** program **(300+ training hours)**. Successfully finished **32** practical assignments and **3** major capstone projects. Developed **14+ ML** models and deployed solutions with **TensorFlow**, **Power BI** dashboards, and **Flask/Streamlit**.
+  * Capstone 1 — **Intelligent HR Agent** (RAG System): Engineered a **RAG** pipeline using **ChromaDB** and **all-MiniLM-L6-v2** to semantically rank candidates against Job Descriptions. Includes a **DistilBERT** sentiment analysis module and an **OCR** engine for unstructured data. [View Code](https://github.com/O-Abdelghany/intelligent-hr-agent)
+  * Capstone 2 — **Predictive Cardiovascular Health**: Achieved **94% accuracy** using an optimized **KNN** model. Utilized **SMOTE** for class imbalance and **RobustScaler** for outlier management. [View Code](https://github.com/O-Abdelghany/cardiovascular-health-predictor)
+  * Capstone 3 — **Uber Data Analytics**: Conducted **EDA** and statistical analysis on ride data to identify cancellation root causes; visualized insights via an interactive **Power BI** dashboard. [View Code](https://github.com/O-Abdelghany/uber-data-analytics)
 * **AI Intern - NTG Clarity**: Completed 3-month ** AI Internship**. Built and deployed 2 AI-powered applications using **Next.js**, **FastAPI**, and **SQLAlchemy**. Integrated **Docker** and **Milvus** for containerized vector database management and deployed **LLM** agents with **LangGraph** and **Ollama**.
 * **Co-Teaching Assistant - MIU**: Assisted in delivering the Computer Programming & Problem Solving course to undergraduate students.
 
@@ -100,7 +103,7 @@ ACHIEVEMENTS:
 
 PROJECTS:
 * **omar-portfolio**: A professional "Recruiter's Co-Pilot" featuring a **Gemini 1.5 Flash** agent with deep-linked citations.
-  URL: [omar-portfolio Repo](https://github.com/O-Abdelghany/omar-portfolio)
+  URL: [View Omar Portfolio Code](https://github.com/O-Abdelghany/omar-portfolio)
 
 * **Intelligent HR Agent** (RAG System): Engineered a **RAG** pipeline using **ChromaDB** and **all-MiniLM-L6-v2** to semantically rank candidates against Job Descriptions. Includes a **DistilBERT** sentiment analysis module for a better understanding of Employees feedbacks and an **OCR** engine for unstructured data.
   URL: [View HR Agent Code](https://github.com/O-Abdelghany/intelligent-hr-agent)
