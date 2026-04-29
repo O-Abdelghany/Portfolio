@@ -108,7 +108,7 @@ PROJECTS:
 * **Intelligent HR Agent** (RAG System): Engineered a **RAG** pipeline using **ChromaDB** and **all-MiniLM-L6-v2** to semantically rank candidates against Job Descriptions. Includes a **DistilBERT** sentiment analysis module for a better understanding of Employees feedbacks and an **OCR** engine for unstructured data.
   URL: [View HR Agent Code](https://github.com/O-Abdelghany/intelligent-hr-agent)
 
-* **AIdentify/Face Detection Attendance System**: Real-time **Computer Vision** system using **OpenCV** and **FastAPI** for automated identity logging and data visualization.
+* **AIdentify/Face Detection Attendance System**: Real-time **Computer Vision** system using **OpenCV** and **FastAPI** for automated identity logging and data visualization. Includes a **twins edge-case handler**: when two faces return confidence scores too close to each other against the database, the system flags the entry and routes it to **manual review** instead of auto-logging — preventing misidentification.
   URL: [View Face Detection Code](https://github.com/O-Abdelghany/AIdentify-ERP)
 
 * **Uber Data Analytics**: Conducted **EDA** and statistical analysis on ride data to identify cancellation root causes; visualized insights via an interactive **Power BI** dashboard.
