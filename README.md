@@ -148,4 +148,4 @@ GitHub repo context is fetched dynamically per query for relevant technical ques
 
 ## 📄 License
 
-MIT — feel free to fork and adapt for your own portfolio.
+feel free to fork and adapt for your own portfolio.
