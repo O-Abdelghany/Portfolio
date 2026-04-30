@@ -1,4 +1,4 @@
-# Omar Abd El Ghany — Neural Portfolio
+# Omar Abd El Ghany - Neural Portfolio
 
 > AI Engineer · MIU · ECPC Competitor · Building Autonomous Intelligence
 
